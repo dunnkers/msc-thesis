@@ -1,12 +1,5 @@
-duder:
-  ok: true
-# task:
-# _target_: mleval.tasks.FeatureRanker
-
+wandb: true
 defaults:
-# can we put these nested in `task`
+  - datasrc: iris
   - task: rank
-  - task/dataset: iris
   - task/ranker: chi2
-  # - dataset: iris
-  # - ranker: chi2

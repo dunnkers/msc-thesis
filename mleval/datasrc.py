@@ -27,3 +27,7 @@ class OpenML(DataSource):
         y, _ = pd.factorize(y)
         
         return X, y
+
+@dataclass
+class WandbArtifact(DataSource):
+    src: str
