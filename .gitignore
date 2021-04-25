@@ -1,1 +1,4 @@
 wandb
+outputs
+__pycache__
+.vscode

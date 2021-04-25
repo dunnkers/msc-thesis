@@ -1,0 +1,5 @@
+# @package _group_
+_target_: mleval.datasources.OpenML
+type: classification
+id: 61
+target_column: class
