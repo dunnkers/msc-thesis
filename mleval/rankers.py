@@ -12,3 +12,6 @@ class Chi2(Ranker):
     def rank(self, X, y) -> List[float]:
         scores = chi2(X, y)
         return scores / sum(scores)
+
+# def skfeature(Ranker):
+#     pass

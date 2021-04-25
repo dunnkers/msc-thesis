@@ -3,3 +3,4 @@ defaults:
   - datasrc: iris
   - task: rank
   - task/ranker: chi2
+  - output: stdout

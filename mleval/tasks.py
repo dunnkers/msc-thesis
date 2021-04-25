@@ -21,4 +21,4 @@ class FeatureRanker(Task):
     def run(self) -> None:
         X, y = self.datasrc.load()
         ranking, _ = self.ranker.rank(X, y)
-        print('ranking', ranking)
+        return ranking
