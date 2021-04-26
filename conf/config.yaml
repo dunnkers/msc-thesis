@@ -1,6 +1,5 @@
-wandb: true
+project: toy-wandb-fs
 defaults:
-  - datasrc: iris
   - task: rank
   - task/ranker: chi2
-  - output: stdout
+  - datasrc: iris

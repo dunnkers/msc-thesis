@@ -3,6 +3,7 @@ from typing import List
 
 @dataclass
 class Ranker:
+    name: str
     ranking_type: str
 
     def rank(self, X, y) -> List[float]: raise NotImplementedError
