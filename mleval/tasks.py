@@ -37,11 +37,9 @@ class FeatureRanker(Task):
         X, y = ds.load()
         ranking, _ = ranker.rank(X, y)
 
-        # save in wandb Artifact
-        artifact = wandb.Artifact(slugify(ds.name), type='feature-ranking')
-        n, p_ds = np.shape(X)
-        columns = [f'X{p}' for p in range(1, p_ds + 1)]
-        table = wandb.Table(columns=columns, data=[ranking])
-        artifact.add(table, slugify(ranker.name))
-        run.log_artifact(artifact)
+        # save ranking to wandb
+        series = pd.Series(ranking)
+        save_path = f'{wandb.run.dir}/ranking.csv'
+        series.to_csv(save_path, index=False)
+
         wandb.finish()
