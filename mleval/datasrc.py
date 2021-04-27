@@ -6,13 +6,26 @@ from typing import Tuple
 
 @dataclass
 class DataSource:
-    type: str # classification / regression
+    """
+    Args:
+        type (str): Either 'classification' or 'regression'.
+        name (str): A human-friendly name for this data source.
+        testseed (int): A seed for splitting the data source in  training / 
+                    testing subsets.
+        bootseed (int): A seed used for taking bootstrap samples from the data
+                    source.
+    """
+    type: str
     name: str
 
-    def __post_init__(self):
+    def load(self) -> Tuple[list, list]: raise NotImplementedError
+
+    def cv_split(self, X, y, testseed=0):
         pass
 
-    def load(self) -> Tuple[list, list]: raise NotImplementedError
+    def bootstrap(self, X, y, bootseed=0):
+        pass
+
 
 @dataclass
 class OpenML(DataSource):

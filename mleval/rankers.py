@@ -11,7 +11,7 @@ class Ranker:
 from sklearn.feature_selection import chi2
 class Chi2(Ranker):
     def rank(self, X, y) -> List[float]:
-        scores = chi2(X, y)
+        scores, _ = chi2(X, y)
         return scores / sum(scores)
 
 # def skfeature(Ranker):

@@ -1,5 +1,11 @@
 project: toy-wandb-fs
+task:
+  bootseed: 0
+cv:
+  test_size: 0.1
+  random_state: 0
 defaults:
   - task: rank
   - task/ranker: chi2
   - datasrc: iris
+  - cv: train_test_split
