@@ -2,3 +2,4 @@
 name: ReliefF
 estimator:
   _target_: skrebate.ReliefF
+  n_features_to_select: 1

@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 from omegaconf import DictConfig, OmegaConf
 from mleval.datasrc import DataSource
-from mleval.dataset import DataSet
 from mleval.rankers import AbstractRanker
 from dataclasses import dataclass
 from slugify import slugify
@@ -34,6 +33,7 @@ class FeatureRanker(Task):
         # move estimator to top-level
         OmegaConf.set_struct(self.cfg, False)
         self.cfg.estimator = est
+        # TODO add get_params()
         del self.cfg.ranker['estimator']
         OmegaConf.set_struct(self.cfg, True)
         
@@ -53,6 +53,11 @@ class FeatureRanker(Task):
                             config=config, 
                             job_type=self.cfg.task.name)
         # perform feature ranking
+        n, p = X.shape
+        n_train, p_train = X_train.shape
+        print(f'Running {self.cfg.ranker.name} on {self.datasrc.name} dataset' +
+              f' (n={n_train}/{n}, p={p_train}/{p})')
+        print('Estimator params: ', self.estimator.get_params())
         self.estimator.fit_transform(X_train, y_train)
         ranking = self.estimator.feature_importances_
 

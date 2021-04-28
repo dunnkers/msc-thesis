@@ -2,9 +2,6 @@ project: toy-wandb-fs
 task:
   bootseed: 0
   fold: 0
-ranker:
-  estimator:
-    n_features_to_select: 2
 cv:
   random_state: 0
   test_size: 0.1

@@ -1,4 +1,3 @@
 # @package _group_
 _target_: sklearn.model_selection.ShuffleSplit
-name: Training/Testing split
 n_splits: 1
