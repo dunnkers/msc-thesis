@@ -1,0 +1,4 @@
+# @package _group_
+name: ReliefF
+estimator:
+  _target_: skrebate.ReliefF

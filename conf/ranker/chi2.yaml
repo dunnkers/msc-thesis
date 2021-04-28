@@ -1,0 +1,4 @@
+# @package _group_
+name: Chi-Squared
+estimator:
+  _target_: mleval.rankers.Chi2

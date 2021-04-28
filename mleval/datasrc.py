@@ -20,13 +20,6 @@ class DataSource:
 
     def load(self) -> Tuple[list, list]: raise NotImplementedError
 
-    def cv_split(self, X, y, testseed=0):
-        pass
-
-    def bootstrap(self, X, y, bootseed=0):
-        pass
-
-
 @dataclass
 class OpenML(DataSource):
     id: int

@@ -5,6 +5,7 @@ from omegaconf import DictConfig
 from mleval.datasrc import DataSource
 from mleval.tasks import Task
 from sklearn.model_selection import BaseCrossValidator
+from sklearn.base import BaseEstimator
 from typing import Union
 
 @hydra.main(config_path='conf', config_name='config')

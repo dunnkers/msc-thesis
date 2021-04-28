@@ -1,4 +1,0 @@
-# @package _group_
-_target_: mleval.rankers.Chi2
-name: Chi-Squared
-ranking_type: scores
