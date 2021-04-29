@@ -6,7 +6,7 @@ import pprint
 from omegaconf import DictConfig, OmegaConf
 from mleval.datasrc import DataSource
 from mleval.rankers import AbstractRanker
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from slugify import slugify
 from sklearn.model_selection import BaseCrossValidator
 from sklearn.pipeline import Pipeline
@@ -42,7 +42,7 @@ class Task:
               f' on fold {self.fold + 1}/{len(splits)}')
         print(f'Using {self.datasrc.name} dataset' +
               f'(n={self.datasrc.n}, p={self.datasrc.p}).')
-        self.run_estimator(X_train, y_train)
+        return self.run_estimator(X_train, y_train)
 
 @dataclass
 class FeatureRanker(Task):
@@ -71,11 +71,39 @@ class FeatureRanker(Task):
         save_path = f'{wandb.run.dir}/ranking.csv'
         series.to_csv(save_path, index=False)
 
+        run_path = wandb.run.path
         wandb.finish()
+        return run_path
 
 @dataclass
-class FitEstimator(Task):
+class ValidateRanking(Task):
     run_path: str = None
+    k: int = 1
+
+    def __post_init__(self):
+        est = self.cfg.validator.estimator
+        self.estimator: AbstractRanker = hydra.utils.instantiate(est)
 
     def run_estimator(self, X, y) -> None:
-        inp = wandb.restore('ranking.csv', run_path=self.run_path)
+        file = wandb.restore('ranking.csv', run_path=self.run_path)
+        ranking = pd.read_csv(file.name, squeeze=True)
+        ranking = ranking.to_numpy()
+        kbest = np.argsort(ranking)[-self.k:]
+        X = X[:, kbest]
+
+        self.estimator.fit(X, y)
+
+        # TODO on testing set
+        score = self.estimator.score(X, y)
+        print(score)
+        return score
+
+@dataclass
+class RankAndValidate(Task):
+    def run_estimator(self, X, y) -> None:
+        ranker = FeatureRanker(**asdict(self))
+        run_path = ranker.run_estimator(X, y)
+
+        validator = ValidateRanking(**asdict(self), run_path=run_path)
+        validator.run_estimator(X, y)
+        pass

@@ -8,7 +8,8 @@ bootstrap:
   random_state: 0
   replace: true
 defaults:
-  - task: rank
+  - task: rank_and_validate
   - ranker: chi2
+  - validator: dt
   - datasrc: iris
   - cv: train_test_split
