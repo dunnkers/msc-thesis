@@ -1,3 +1,10 @@
+"""
+e.g. run:
+job_id=$(python redis-queue-test.py https://google.com/)
+python redis-queue-test.py https://amazon.com/ $job_id
+rq worker -u $REDIS_URL
+"""
+
 #%%
 import os
 import sys
@@ -12,8 +19,10 @@ q = Queue(connection=Redis(
     ssl=True
 ))
 
-result = q.enqueue(count_words_at_url, sys.argv[1])
-print('enqued 1 job')
-print('jobs:', q.jobs)
-
-#%%
+dep = sys.argv[2] if len(sys.argv) > 2 else None
+job = q.enqueue(
+    count_words_at_url,
+    sys.argv[1],
+    depends_on=dep,
+    result_ttl='1h')
+print(job.id)
