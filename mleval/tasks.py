@@ -11,6 +11,7 @@ from sklearn.model_selection import BaseCrossValidator
 from sklearn.pipeline import Pipeline
 from sklearn.utils import resample
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import log_loss
 from typing import Tuple, List
 
 @dataclass
@@ -74,11 +75,20 @@ class FeatureRanker(Task):
         # perform feature ranking
         n, p = X_train.shape
         print(f'Feature ranking with (n={n}, p={p}). Params:')
-
         self.estimator.fit(X_train, y_train)
         ranking = self.estimator.feature_importances_
         ranking = ranking / np.sum(ranking) # normalize as probability vector
         print(ranking)
+        
+        # compare to ground-truth, if available
+        relevant_features = self.cfg.datasrc.relevant_features
+        if relevant_features:
+            gt = np.zeros_like(ranking)
+            gt[relevant_features] = 1.0
+            loss = log_loss(gt, ranking)
+            wandb.log({
+                'gt_loss': loss
+            })
 
         # save ranking to wandb
         series = pd.Series(ranking)

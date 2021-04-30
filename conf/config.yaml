@@ -11,5 +11,5 @@ defaults:
   - task: rank
   - ranker: tabnet_regressor
   - validator: dt
-  - datasrc: switch
+  - datasrc: xor
   - cv: train_test_split

@@ -15,6 +15,7 @@ class DataSource:
     name: str
     type: str
     multivariate: bool = False
+    relevant_features: List[int] = None
 
     def load(self) -> Tuple[List, List]: raise NotImplementedError
     def get_data(self) -> Tuple[List, List]:
