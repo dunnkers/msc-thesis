@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from openml.datasets import get_dataset
 import pandas as pd
 import numpy as np
-from typing import Tuple
+from typing import Tuple, List
+import wandb
 
 @dataclass
 class DataSource:
@@ -11,11 +12,12 @@ class DataSource:
         type (str): Either 'classification' or 'regression'.
         name (str): A human-friendly name for this data source.
     """
-    type: str
     name: str
+    type: str
+    multivariate: bool = False
 
-    def load(self) -> Tuple[list, list]: raise NotImplementedError
-    def get_data(self) -> Tuple[list, list]:
+    def load(self) -> Tuple[List, List]: raise NotImplementedError
+    def get_data(self) -> Tuple[List, List]:
         X, y = self.load()
 
         # samples / dimensions
@@ -27,10 +29,10 @@ class DataSource:
 
 @dataclass
 class OpenML(DataSource):
-    id: int
-    target_column: str
+    id: int = None
+    target_column: str = None
 
-    def load(self) -> Tuple[list, list]:
+    def load(self) -> Tuple[List, List]:
         dataset = get_dataset(self.id)
         X, y, cat, _ = dataset.get_data(target=self.target_column)
 
@@ -45,4 +47,13 @@ class OpenML(DataSource):
 
 @dataclass
 class WandbArtifact(DataSource):
-    src: str
+    artifact_id: str = None
+    artifact_type: str = 'dataset'
+    entity: str = None
+
+    def load(self) -> Tuple[List, List]:
+        api = wandb.Api()
+        artifact = api.artifact(self.artifact_id)
+        X = artifact.get('X').data
+        Y = artifact.get('Y').data
+        return np.array(X), np.array(Y)

@@ -1,9 +1,9 @@
 # @package _group_
-name: ReliefF
+name: TabNet
 compatibility:
-  - classification
   - regression
   - multiclass
+  - multivariate
 estimator:
-  _target_: skrebate.ReliefF
+  _target_: mleval.rankers.TabNetRegressionRanker
   n_features_to_select: 1

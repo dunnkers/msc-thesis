@@ -3,6 +3,8 @@ from typing import List
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
+from skrebate import ReliefF
+from pytorch_tabnet.tab_model import TabNetRegressor, TabNetClassifier
 
 @dataclass
 class AbstractRanker(BaseEstimator):
@@ -18,3 +20,12 @@ class Chi2(SelectKBest):
     @property
     def feature_importances_(self):
         return self.scores_
+
+@dataclass
+class skrebate(AbstractRanker):
+    pass
+
+@dataclass
+class TabNetRegressionRanker(TabNetRegressor):
+    def __init__(self, n_features_to_select=1):
+        super(TabNetRegressor, self).__init__()

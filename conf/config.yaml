@@ -3,13 +3,13 @@ task:
   fold: 0
 cv:
   random_state: 0
-  test_size: 0.1
+  test_size: 0.25
 bootstrap:
   random_state: 0
   replace: true
 defaults:
-  - task: rank_and_validate
-  - ranker: chi2
+  - task: rank
+  - ranker: tabnet_regressor
   - validator: dt
-  - datasrc: iris
+  - datasrc: switch
   - cv: train_test_split

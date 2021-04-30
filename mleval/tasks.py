@@ -10,6 +10,7 @@ from slugify import slugify
 from sklearn.model_selection import BaseCrossValidator
 from sklearn.pipeline import Pipeline
 from sklearn.utils import resample
+from sklearn.preprocessing import MinMaxScaler
 from typing import Tuple, List
 
 @dataclass
@@ -51,6 +52,12 @@ class FeatureRanker(Task):
         est = self.cfg.ranker.estimator
         self.estimator: AbstractRanker = hydra.utils.instantiate(est)
 
+        assert self.datasrc.type in self.cfg.ranker.compatibility, \
+            f"Ranker does not support {self.datasrc.type} datasets."
+        multivariate = self.datasrc.multivariate in self.cfg.ranker.compatibility
+        assert 'multivariate' in self.cfg.ranker.compatibility \
+            if self.datasrc.multivariate else True, \
+            "Ranker does not support multivariate datasets."
         # # move estimator to top-level
         # OmegaConf.set_struct(self.cfg, False)
         # self.cfg.estimator = est
@@ -67,8 +74,11 @@ class FeatureRanker(Task):
         # perform feature ranking
         n, p = X_train.shape
         print(f'Feature ranking with (n={n}, p={p}). Params:')
-        self.estimator.fit_transform(X_train, y_train)
+
+        self.estimator.fit(X_train, y_train)
         ranking = self.estimator.feature_importances_
+        ranking = ranking / np.sum(ranking) # normalize as probability vector
+        print(ranking)
 
         # save ranking to wandb
         series = pd.Series(ranking)
