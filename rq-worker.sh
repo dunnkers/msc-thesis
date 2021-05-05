@@ -4,7 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --partition=short
 #SBATCH --mem=10000
-#SBATCH --output=/data/$USER/logs/slurm-%A_%a.out
+#SBATCH --output=/data/s2995697/logs/slurm-%A_%a.out
 
 module load Python
 python -m venv venv

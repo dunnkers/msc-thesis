@@ -6,7 +6,7 @@ A Machine Learning benchmarking library. Neatly integrates with wandb and sklear
 ## Enqueueing jobs
 Install [fseval](https://github.com/dunnkers/fseval). Then run:
 
-```
+```shell
 fseval --multirun \
     ranker=chi2,relieff,tabnet \
     dataset=boston,iris,switch,xor \
@@ -19,3 +19,21 @@ fseval --multirun \
 ```
 
 ... which runs a benchmark on 3 rankers, 4 datasets and some 10 bootstrap datasets.
+
+
+## Running workers on Peregrine
+From your laptop, run:
+
+```shell
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "sbatch msc-thesis/rq-worker.sh --array=0-5 --job-name=rq-workers"
+```
+
+Check your queue status:
+```shell
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "squeue -u $PEREGRINE_USERNAME"
+```
+
+## Running the RQ dashboard
+```shell
+rq-dashboard -u $REDIS_URL
+```
