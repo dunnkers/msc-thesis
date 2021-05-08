@@ -1,9 +1,11 @@
 
 #%%
-import wandb
 import numpy as np
-from slugify import slugify
 from l2x_synthetic.make_data import generate_data
+from slugify import slugify
+
+import wandb
+
 
 #%%
 def store_dataset_in_artifact(name, X, Y):
@@ -22,7 +24,7 @@ def store_dataset_in_artifact(name, X, Y):
     run.log_artifact(artifact)
 
 #%%
-run = wandb.init(job_type="dataset-creation")
+run = wandb.init(project='synthetic-datasets', job_type="dataset-creation")
 
 X, Y = generate_data(n=10000, datatype='orange_skin', seed=0)
 store_dataset_in_artifact('orange_skin', X, Y)
