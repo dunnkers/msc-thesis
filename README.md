@@ -8,10 +8,10 @@ Install [fseval](https://github.com/dunnkers/fseval). Then run:
 
 ```shell
 fseval --multirun \
-    ranker=chi2,relieff,tabnet \
-    dataset=boston,iris,switch,xor \
+    ranker="glob(*)" \
+    dataset="glob(*)" \
     resample.sample_size=0.75 \
-    resample.random_state=10,11,12,13,14,15,16,17,18,19,20 \
+    resample.random_state="range(20, 30)" \
     hydra/launcher=rq \
     hydra.launcher.enqueue.result_ttl=1d \
     hydra.launcher.enqueue.failure_ttl=1d \
