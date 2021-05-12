@@ -2,9 +2,10 @@
 import sys
 
 import numpy as np
+
 import wandb
 
-ROWS = 4
+ROWS = 1000
 
 
 def f(i):
@@ -19,7 +20,7 @@ def f(i):
     print(f"gaussian_value={gaussian_value}")
 
     # wandb
-    wandb.init(id=str(run_id))
+    wandb.init(id=str(run_id), resume="allow")
     wandb.log({"gaussian_value": gaussian_value})
     wandb.finish()
 

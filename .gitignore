@@ -4,3 +4,5 @@ __pycache__
 .vscode
 multirun
 venv
+sklearn_cache
+.DS_Store
