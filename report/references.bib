@@ -1,4 +1,122 @@
 
+@phdthesis{overschie_feature_2020,
+	title = {Feature selection performance assessment},
+	abstract = {The evaluation of feature selection algorithms is a many-faceted problem, which has been conducted in different ways in the literature. With a unified theoretical framework lacking, authors resort to widely used methods of evaluation - which are not necessarily optimal. In this paper, all relevant aspects of the evaluation process are thoroughly analyzed, after which a set of sensible metrics is distilled. Using a priori information about relevant features, promising metrics to measure feature subset quality include the ROCAUC- and mAP scores. Furthermore, measures of stability and statistical integrity testing are given. An implementation of the pipeline, fseval, is made publicly available. Finally, a quantitative experiment implements and discusses the newly proposed set of metrics, which shows the new metrics to be of value and able to foretell feature subset prediction performance.},
+	school = {University of Groningen},
+	author = {Overschie, Jeroen},
+	month = jun,
+	year = {2020},
+	keywords = {benchmark},
+}
+
+@article{peng_feature_2005,
+	title = {Feature selection based on mutual information criteria of max-dependency, max-relevance, and min-redundancy},
+	volume = {27},
+	issn = {1939-3539},
+	doi = {10.1109/TPAMI.2005.159},
+	abstract = {Feature selection is an important problem for pattern classification systems. We study how to select good features according to the maximal statistical dependency criterion based on mutual information. Because of the difficulty in directly implementing the maximal dependency condition, we first derive an equivalent form, called minimal-redundancy-maximal-relevance criterion (mRMR), for first-order incremental feature selection. Then, we present a two-stage feature selection algorithm by combining mRMR and other more sophisticated feature selectors (e.g., wrappers). This allows us to select a compact set of superior features at very low cost. We perform extensive experimental comparison of our algorithm and other methods using three different classifiers (naive Bayes, support vector machine, and linear discriminate analysis) and four different data sets (handwritten digits, arrhythmia, NCI cancer cell lines, and lymphoma tissues). The results confirm that mRMR leads to promising improvement on feature selection and classification accuracy.},
+	number = {8},
+	journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+	author = {Peng, Hanchuan and Long, Fuhui and Ding, C.},
+	month = aug,
+	year = {2005},
+	note = {Conference Name: IEEE Transactions on Pattern Analysis and Machine Intelligence},
+	keywords = {to read},
+	pages = {1226--1238},
+}
+
+@article{song_gene_2007,
+	title = {Gene selection via the {BAHSIC} family of algorithms},
+	volume = {23},
+	issn = {1367-4803},
+	url = {https://doi.org/10.1093/bioinformatics/btm216},
+	doi = {10.1093/bioinformatics/btm216},
+	abstract = {Motivation: Identifying significant genes among thousands of sequences on a microarray is a central challenge for cancer research in bioinformatics. The ultimate goal is to detect the genes that are involved in disease outbreak and progression. A multitude of methods have been proposed for this task of feature selection, yet the selected gene lists differ greatly between different methods. To accomplish biologically meaningful gene selection from microarray data, we have to understand the theoretical connections and the differences between these methods. In this article, we define a kernel-based framework for feature selection based on the Hilbert–Schmidt independence criterion and backward elimination, called BAHSIC. We show that several well-known feature selectors are instances of BAHSIC, thereby clarifying their relationship. Furthermore, by choosing a different kernel, BAHSIC allows us to easily define novel feature selection algorithms. As a further advantage, feature selection via BAHSIC works directly on multiclass problems.Results: In a broad experimental evaluation, the members of the BAHSIC family reach high levels of accuracy and robustness when compared to other feature selection techniques. Experiments show that features selected with a linear kernel provide the best classification performance in general, but if strong non-linearities are present in the data then non-linear kernels can be more suitable.Availability: Accompanying homepage is http://www.dbs.ifi.lmu.de/{\textasciitilde}borgward/BAHSICContact:kb@dbs.ifi.lmu.deSupplementary information: Supplementary data are available at Bioinformatics online.},
+	number = {13},
+	urldate = {2021-04-24},
+	journal = {Bioinformatics},
+	author = {Song, Le and Bedo, Justin and Borgwardt, Karsten M. and Gretton, Arthur and Smola, Alex},
+	month = jul,
+	year = {2007},
+	keywords = {to read},
+	pages = {i490--i498},
+}
+
+@article{chen_kernel_2018,
+	title = {Kernel {Feature} {Selection} via {Conditional} {Covariance} {Minimization}},
+	url = {http://arxiv.org/abs/1707.01164},
+	abstract = {We propose a method for feature selection that employs kernel-based measures of independence to find a subset of covariates that is maximally predictive of the response. Building on past work in kernel dimension reduction, we show how to perform feature selection via a constrained optimization problem involving the trace of the conditional covariance operator. We prove various consistency results for this procedure, and also demonstrate that our method compares favorably with other state-of-the-art algorithms on a variety of synthetic and real data sets.},
+	urldate = {2021-04-24},
+	journal = {arXiv:1707.01164 [cs, stat]},
+	author = {Chen, Jianbo and Stern, Mitchell and Wainwright, Martin J. and Jordan, Michael I.},
+	month = oct,
+	year = {2018},
+	note = {arXiv: 1707.01164},
+	keywords = {Computer Science - Artificial Intelligence, Computer Science - Machine Learning, Statistics - Machine Learning, Statistics - Methodology, to read},
+}
+
+@article{wojtas_feature_2020,
+	title = {Feature {Importance} {Ranking} for {Deep} {Learning}},
+	url = {http://arxiv.org/abs/2010.08973},
+	abstract = {Feature importance ranking has become a powerful tool for explainable AI. However, its nature of combinatorial optimization poses a great challenge for deep learning. In this paper, we propose a novel dual-net architecture consisting of operator and selector for discovery of an optimal feature subset of a fixed size and ranking the importance of those features in the optimal subset simultaneously. During learning, the operator is trained for a supervised learning task via optimal feature subset candidates generated by the selector that learns predicting the learning performance of the operator working on different optimal subset candidates. We develop an alternate learning algorithm that trains two nets jointly and incorporates a stochastic local search procedure into learning to address the combinatorial optimization challenge. In deployment, the selector generates an optimal feature subset and ranks feature importance, while the operator makes predictions based on the optimal subset for test data. A thorough evaluation on synthetic, benchmark and real data sets suggests that our approach outperforms several state-of-the-art feature importance ranking and supervised feature selection methods. (Our source code is available: https://github.com/maksym33/FeatureImportanceDL)},
+	urldate = {2021-04-24},
+	journal = {arXiv:2010.08973 [cs]},
+	author = {Wojtas, Maksymilian and Chen, Ke},
+	month = oct,
+	year = {2020},
+	note = {arXiv: 2010.08973},
+	keywords = {to read},
+}
+
+@article{adamczewski_q-fit_2020,
+	title = {Q-{FIT}: {The} {Quantifiable} {Feature} {Importance} {Technique} for {Explainable} {Machine} {Learning}},
+	shorttitle = {Q-{FIT}},
+	url = {http://arxiv.org/abs/2010.13872},
+	abstract = {We introduce a novel framework to quantify the importance of each input feature for model explainability. A user of our framework can choose between two modes: (a) global explanation: providing feature importance globally across all the data points; and (b) local explanation: providing feature importance locally for each individual data point. The core idea of our method comes from utilizing the Dirichlet distribution to define a distribution over the importance of input features. This particular distribution is useful in ranking the importance of the input features as a sample from this distribution is a probability vector (i.e., the vector components sum to 1), Thus, the ranking uncovered by our framework which provides a {\textbackslash}textit\{quantifiable explanation\} of how significant each input feature is to a model's output. This quantifiable explainability differentiates our method from existing feature-selection methods, which simply determine whether a feature is relevant or not. Furthermore, a distribution over the explanation allows to define a closed-form divergence to measure the similarity between learned feature importance under different models. We use this divergence to study how the feature importance trade-offs with essential notions in modern machine learning, such as privacy and fairness. We show the effectiveness of our method on a variety of synthetic and real datasets, taking into account both tabular and image datasets.},
+	urldate = {2021-04-24},
+	journal = {arXiv:2010.13872 [cs, stat]},
+	author = {Adamczewski, Kamil and Harder, Frederik and Park, Mijung},
+	month = oct,
+	year = {2020},
+	note = {arXiv: 2010.13872},
+	keywords = {read 20\%, to read},
+}
+
+@inproceedings{yoon_invase_2019,
+	title = {{INVASE}: {Instance}-wise {Variable} {Selection} using {Neural} {Networks}},
+	shorttitle = {{INVASE}},
+	abstract = {Semantic Scholar extracted view of "INVASE: Instance-wise Variable Selection using Neural Networks" by Jinsung Yoon et al.},
+	booktitle = {{ICLR}},
+	author = {Yoon, Jinsung and Jordon, James and Schaar, M.},
+	year = {2019},
+	keywords = {to read},
+}
+
+@inproceedings{bradley_feature_1998,
+	title = {Feature {Selection} via {Concave} {Minimization} and {Support} {Vector} {Machines}},
+	abstract = {Computational comparison is made between two feature selection approaches for finding a separating plane that discriminates between two point sets in an n-dimensional feature space that utilizes as few of the n features (dimensions) as possible. In the concave minimization approach [19, 5] a separating plane is generated by minimizing a weighted sum of distances of misclassified points to two parallel planes that bound the sets and which determine the separating plane midway between them. Furthermore, the number of dimensions of the space used to determine the plane is minimized. In the support vector machine approach [27, 7, 1, 10, 24, 28], in addition to minimizing the weighted sum of distances of misclassified points to the bounding planes, we also maximize the distance between the two bounding planes that generate the separating plane. Computational results show that feature suppression is an indirect consequence of the support vector machine approach when an appropriate norm is us...},
+	booktitle = {Machine {Learning} {Proceedings} of the {Fifteenth} {International} {Conference}({ICML} ’98},
+	publisher = {Morgan Kaufmann},
+	author = {Bradley, P. S. and Mangasarian, O. L.},
+	year = {1998},
+	keywords = {to read},
+	pages = {82--90},
+}
+
+@article{arik_tabnet_2020,
+	title = {{TabNet}: {Attentive} {Interpretable} {Tabular} {Learning}},
+	shorttitle = {{TabNet}},
+	url = {http://arxiv.org/abs/1908.07442},
+	abstract = {We propose a novel high-performance and interpretable canonical deep tabular data learning architecture, TabNet. TabNet uses sequential attention to choose which features to reason from at each decision step, enabling interpretability and more efficient learning as the learning capacity is used for the most salient features. We demonstrate that TabNet outperforms other neural network and decision tree variants on a wide range of non-performance-saturated tabular datasets and yields interpretable feature attributions plus insights into the global model behavior. Finally, for the first time to our knowledge, we demonstrate self-supervised learning for tabular data, significantly improving performance with unsupervised representation learning when unlabeled data is abundant.},
+	urldate = {2021-04-22},
+	journal = {arXiv:1908.07442 [cs, stat]},
+	author = {Arik, Sercan O. and Pfister, Tomas},
+	month = dec,
+	year = {2020},
+	note = {arXiv: 1908.07442},
+	keywords = {Computer Science - Machine Learning, Statistics - Machine Learning},
+}
+
 @article{simonyan_deep_2014,
 	title = {Deep {Inside} {Convolutional} {Networks}: {Visualising} {Image} {Classification} {Models} and {Saliency} {Maps}},
 	shorttitle = {Deep {Inside} {Convolutional} {Networks}},
@@ -10,7 +128,7 @@
 	month = apr,
 	year = {2014},
 	note = {arXiv: 1312.6034},
-	keywords = {Computer Science - Computer Vision and Pattern Recognition},
+	keywords = {to read},
 }
 
 @article{ribeiro_model-agnostic_2016,
@@ -23,7 +141,20 @@
 	month = jun,
 	year = {2016},
 	note = {arXiv: 1606.05386},
-	keywords = {Computer Science - Machine Learning, Statistics - Machine Learning},
+	keywords = {to read},
+}
+
+@article{lundberg_unified_2017,
+	title = {A {Unified} {Approach} to {Interpreting} {Model} {Predictions}},
+	url = {http://arxiv.org/abs/1705.07874},
+	abstract = {Understanding why a model makes a certain prediction can be as crucial as the prediction's accuracy in many applications. However, the highest accuracy for large modern datasets is often achieved by complex models that even experts struggle to interpret, such as ensemble or deep learning models, creating a tension between accuracy and interpretability. In response, various methods have recently been proposed to help users interpret the predictions of complex models, but it is often unclear how these methods are related and when one method is preferable over another. To address this problem, we present a unified framework for interpreting predictions, SHAP (SHapley Additive exPlanations). SHAP assigns each feature an importance value for a particular prediction. Its novel components include: (1) the identification of a new class of additive feature importance measures, and (2) theoretical results showing there is a unique solution in this class with a set of desirable properties. The new class unifies six existing methods, notable because several recent methods in the class lack the proposed desirable properties. Based on insights from this unification, we present new methods that show improved computational performance and/or better consistency with human intuition than previous approaches.},
+	urldate = {2021-04-22},
+	journal = {arXiv:1705.07874 [cs, stat]},
+	author = {Lundberg, Scott and Lee, Su-In},
+	month = nov,
+	year = {2017},
+	note = {arXiv: 1705.07874},
+	keywords = {to read},
 }
 
 @article{shrikumar_learning_2019,
@@ -36,6 +167,7 @@
 	month = oct,
 	year = {2019},
 	note = {arXiv: 1704.02685},
+	keywords = {to read},
 }
 
 @book{kniberg_benchmark_2018,
@@ -104,7 +236,7 @@
 	keywords = {novel algorithm, read 20\%},
 }
 
-@inproceedings{bradley_feature_1998,
+@inproceedings{bradley_feature_1998-1,
 	title = {Feature {Selection} via {Concave} {Minimization} and {Support} {Vector} {Machines}},
 	abstract = {Computational comparison is made between two feature selection approaches for finding a separating plane that discriminates between two point sets in an n-dimensional feature space that utilizes as few of the n features (dimensions) as possible. In the concave minimization approach [19, 5] a separating plane is generated by minimizing a weighted sum of distances of misclassified points to two parallel planes that bound the sets and which determine the separating plane midway between them. Furthermore, the number of dimensions of the space used to determine the plane is minimized. In the support vector machine approach [27, 7, 1, 10, 24, 28], in addition to minimizing the weighted sum of distances of misclassified points to the bounding planes, we also maximize the distance between the two bounding planes that generate the separating plane. Computational results show that feature suppression is an indirect consequence of the support vector machine approach when an appropriate norm is us...},
 	booktitle = {Machine {Learning} {Proceedings} of the {Fifteenth} {International} {Conference}({ICML} ’98},
@@ -144,7 +276,7 @@
 	month = jun,
 	year = {2018},
 	note = {arXiv: 1802.07814},
-	keywords = {novel algorithm, read 20\%, read 40\%, synthetic datasets},
+	keywords = {novel algorithm, read 20\%, read 40\%, synthetic datasets, to read},
 }
 
 @article{greenwell_simple_2018,
@@ -268,16 +400,6 @@
 	pages = {916--954},
 }
 
-@phdthesis{overschie_feature_2012,
-	title = {Feature selection performance assessment},
-	abstract = {The evaluation of feature selection algorithms is a many-faceted problem, which has been conducted in different ways in the literature. With a unified theoretical framework lacking, authors resort to widely used methods of evaluation - which are not necessarily optimal. In this paper, all relevant aspects of the evaluation process are thoroughly analyzed, after which a set of sensible metrics is distilled. Using a priori information about relevant features, promising metrics to measure feature subset quality include the ROCAUC- and mAP scores. Furthermore, measures of stability and statistical integrity testing are given. An implementation of the pipeline, fseval, is made publicly available. Finally, a quantitative experiment implements and discusses the newly proposed set of metrics, which shows the new metrics to be of value and able to foretell feature subset prediction performance.},
-	school = {University of Groningen},
-	author = {Overschie, Jeroen},
-	month = jun,
-	year = {2012},
-	keywords = {benchmark},
-}
-
 @article{bommert_stabm_nodate,
 	title = {stabm: {Stability} {Measures} for {Feature} {Selection}},
 	abstract = {The R (R Core Team, 2020) package stabm provides functionality for quantifying the similarity of two or more sets. For example, consider the two sets \{A, B, C, D\} and \{A, B, C, E\}. Intuitively, these sets are quite similar because their overlap is large compared to the cardinality of the two sets. The R package stabm implements functions to express the similarity of sets by a real valued score. Quantifying the similarity of sets is useful for comparing sets of selected features. But also for many other tasks like similarity analyses of gene sets or text corpora, the R package stabm can be employed.},
@@ -305,7 +427,7 @@
 	title = {Discovering {Interaction} {Effects} in {Ensemble} {Models}},
 	url = {https://blog.macuyiko.com/post/2019/discovering-interaction-effects-in-ensemble-models.html},
 	urldate = {2020-10-12},
-	keywords = {no-label-yet, to read},
+	keywords = {no-label-yet},
 }
 
 @article{zhao_searching_2009,
@@ -345,7 +467,7 @@
 	abstract = {Machine learning algorithms usually operate as black boxes and it is unclear how they derived a certain decision. This book is a guide for practitioners to make machine learning decisions interpretable.},
 	urldate = {2020-09-23},
 	author = {Molnar, Christoph},
-	keywords = {read 20\%, read 40\%, synthetic datasets, to read},
+	keywords = {read 20\%, read 40\%, synthetic datasets},
 }
 
 @article{dash_feature_1997,
@@ -388,7 +510,7 @@
 	pages = {189--203},
 }
 
-@article{arik_tabnet_2020,
+@article{arik_tabnet_2020-1,
 	title = {{TabNet}: {Attentive} {Interpretable} {Tabular} {Learning}},
 	shorttitle = {{TabNet}},
 	url = {http://arxiv.org/abs/1908.07442},
@@ -419,7 +541,7 @@
 	author = {Okimoto, Lucas Chesini and Savii, Ricardo Manhães and Lorena, Ana Carolina},
 	month = oct,
 	year = {2017},
-	keywords = {read 20\%, synthetic datasets, to read},
+	keywords = {read 20\%, synthetic datasets},
 	pages = {91--96},
 }
 
@@ -634,7 +756,7 @@ version: 2},
 	author = {Reis, Marcelo S. and Estrela, Gustavo and Ferreira, Carlos Eduardo and Barrera, Junior},
 	month = jan,
 	year = {2017},
-	keywords = {benchmark, to read},
+	keywords = {benchmark, read 20\%},
 	pages = {193--197},
 }
 
@@ -840,7 +962,7 @@ version: 2},
 	author = {Patki, Neha and Wedge, Roy and Veeramachaneni, Kalyan},
 	month = oct,
 	year = {2016},
-	keywords = {read 20\%, synthetic datasets, to read},
+	keywords = {read 20\%, synthetic datasets},
 	pages = {399--410},
 }
 
