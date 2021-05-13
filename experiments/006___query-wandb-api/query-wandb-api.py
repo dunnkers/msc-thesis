@@ -5,7 +5,9 @@ api = wandb.Api()
 
 runs = api.runs(
     "dunnkers/toy-wandb-fs",
-    {"$or": [{"ranker.name": "Chi-Squared"}]},
+    filters={
+        "$or": [{"config.ranker.name": "TabNet", "config.dataset.name": "Iris Flowers"}]
+    }
 )
 print("Found %i" % len(runs))
 
