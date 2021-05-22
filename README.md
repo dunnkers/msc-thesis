@@ -47,7 +47,7 @@ ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "sh ~/msc-thesis/sacct_to_csv.sh > 
 
 To download raw log files:
 ```shell
-rsync -aP $PEREGRINE_USERNAME@peregrine.hpc.rug.nl:/data/$PEREGRINE_USERNAME/logs/ ./logs/
+rsync -aP $PEREGRINE_USERNAME@peregrine.hpc.rug.nl:/data/$PEREGRINE_USERNAME/slurm/ ./slurm/
 ```
 
 Then upload to wandb using:

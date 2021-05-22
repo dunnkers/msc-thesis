@@ -11,4 +11,4 @@ module load Python
 python -m venv venv
 source venv/bin/activate
 pip install humanfriendly pandas wandb
-sh src/sacct_to_csv.sh $SACCT_JOB_ID | python src/sacct_csv_to_wandb.sh
+sh src/sacct_to_csv.sh $SACCT_JOB_ID | python src/sacct_csv_to_wandb.py
