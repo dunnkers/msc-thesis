@@ -4,6 +4,6 @@ sacct --format='$params' \
     --starttime 2021-05-20 \
     -u $USER \
     --parsable2 \
-    --verbpse \
+    --verbose \
     --delimiter=';' \
     > /data/$USER/logs/sacct.csv
