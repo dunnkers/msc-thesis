@@ -5,16 +5,21 @@ A Machine Learning benchmarking library. Neatly integrates with wandb and sklear
 
 ## Enqueueing jobs
 Install [fseval](https://github.com/dunnkers/fseval). Then run:
+    <!-- # hydra.run.dir="/Users/dunnkers/Downloads/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}" \
+    # hydra.sweep.dir="/Users/dunnkers/Downloads/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}" \ -->
 
 ```shell
 fseval --multirun \
+    hydra.run.dir="/data/$PEREGRINE_USERNAME/fseval/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}" \
+    hydra.sweep.dir="/data/$PEREGRINE_USERNAME/fseval/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}" \
+    hydra.sweep.subdir="${hydra.job.num}" \
     dataset="glob(*)" \
     estimator@pipeline.ranker="glob(*)" \
+    pipeline.n_bootstraps=30 \
     hydra/launcher=rq \
     hydra.launcher.enqueue.result_ttl=1d \
     hydra.launcher.enqueue.failure_ttl=1d \
     hydra.launcher.stop_after_enqueue=true \
-    pipeline.n_bootstraps=30 \
     # +callbacks.wandb.project="fseval" \
 ```
 
@@ -27,7 +32,7 @@ fseval --multirun \
 From your laptop, run:
 
 ```shell
-ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "sbatch --array=0-1 --job-name=rq-workers msc-thesis/rq-worker.sh"
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-1 --job-name=rq-workers src/rq-worker.sh"
 ```
 
 Check your queue status:

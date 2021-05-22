@@ -3,33 +3,16 @@ from io import StringIO
 
 import humanfriendly
 import pandas as pd
-
-# import subprocess
-# import sys
 import wandb
-
-# import os
-
-# PEREGRINE_USERNAME = os.environ.get("PEREGRINE_USERNAME")
-# HOST = f"{PEREGRINE_USERNAME}@peregrine.hpc.rug.nl"
-# # Ports are handled in ~/.ssh/config since we use OpenSSH
-# COMMAND="uname -a"
-
-# ssh = subprocess.Popen(["ssh", "%s" % HOST, COMMAND],
-#                        shell=False,
-#                        stdout=subprocess.PIPE,
-#                        stderr=subprocess.PIPE)
-# result = ssh.stdout.readlines()
-# for line in sys.stdin:
 
 # read input
 csv_input = ""
 for line in sys.stdin:
     csv_input += f"{line}\n"
 assert len(csv_input) > 0, "no sacct csv input"
-
 csv_input = StringIO(csv_input)
 
+# read csv to data frame
 df = pd.read_csv(csv_input, sep=";", parse_dates=["Eligible", "End", "Start", "Submit"])
 
 
@@ -85,12 +68,9 @@ df["ReqMem"] = parse_memory(df["ReqMem"])
 # exit code
 df["ExitCode"] = df["ExitCode"].str.split(":", expand=True)[1].astype(int)
 
-print(df["ExitCode"])
-exit(0)
-
 for index, result in df.iterrows():
     wandb.init(
-        project="msc-thesis",
+        project="peregrine",
         config=result.to_dict(),
         id=result["JobID"],
         job_type=result["JobName"],
