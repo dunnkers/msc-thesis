@@ -7,14 +7,14 @@ A Machine Learning benchmarking library. Neatly integrates with wandb and sklear
 Install [fseval](https://github.com/dunnkers/fseval). Then run:
     <!-- # hydra.run.dir="/Users/dunnkers/Downloads/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}" \
     # hydra.sweep.dir="/Users/dunnkers/Downloads/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}" \ -->
+    <!-- hydra.run.dir='/data/${oc.env:PEREGRINE_USERNAME}/fseval/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}' \
+    hydra.sweep.dir='/data/${oc.env:PEREGRINE_USERNAME}/fseval/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}' \ 
+    hydra.sweep.subdir='${hydra.job.num}' \-->
 
 ```shell
 fseval --multirun \
-    hydra.run.dir="/data/$PEREGRINE_USERNAME/fseval/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}" \
-    hydra.sweep.dir="/data/$PEREGRINE_USERNAME/fseval/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}" \
-    hydra.sweep.subdir="${hydra.job.num}" \
-    dataset="glob(*)" \
-    estimator@pipeline.ranker="glob(*)" \
+    dataset="iris" \
+    estimator@pipeline.ranker="chi2" \
     pipeline.n_bootstraps=30 \
     hydra/launcher=rq \
     hydra.launcher.enqueue.result_ttl=1d \
