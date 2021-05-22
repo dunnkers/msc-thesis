@@ -22,6 +22,8 @@ fseval --multirun \
 
 
 ## Running workers on Peregrine
+> Make sure to set the `PEREGRINE_USERNAME` environment variable both locally and on the cluster.
+
 From your laptop, run:
 
 ```shell
@@ -33,9 +35,13 @@ Check your queue status:
 ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "squeue -u $PEREGRINE_USERNAME"
 ```
 
-Download logs:
+Save `sacct` SLURM job information to `/data/<user>/logs/`.
 ```shell
-ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "sh ~/msc-thesis/save_sacct_to_logs.sh"
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "sh ~/msc-thesis/sacct_to_csv.sh > /data/$PEREGRINE_USERNAME/logs/sacct.csv"
+```
+
+To download raw log files:
+```shell
 rsync -aP $PEREGRINE_USERNAME@peregrine.hpc.rug.nl:/data/$PEREGRINE_USERNAME/logs/ ./logs/
 ```
 

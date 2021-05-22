@@ -1,11 +1,36 @@
+import sys
+from io import StringIO
+
 import humanfriendly
 import pandas as pd
 
+# import subprocess
+# import sys
 import wandb
 
-df = pd.read_csv(
-    "./logs/sacct.csv", sep=";", parse_dates=["Eligible", "End", "Start", "Submit"]
-)
+# import os
+
+# PEREGRINE_USERNAME = os.environ.get("PEREGRINE_USERNAME")
+# HOST = f"{PEREGRINE_USERNAME}@peregrine.hpc.rug.nl"
+# # Ports are handled in ~/.ssh/config since we use OpenSSH
+# COMMAND="uname -a"
+
+# ssh = subprocess.Popen(["ssh", "%s" % HOST, COMMAND],
+#                        shell=False,
+#                        stdout=subprocess.PIPE,
+#                        stderr=subprocess.PIPE)
+# result = ssh.stdout.readlines()
+# for line in sys.stdin:
+
+# read input
+csv_input = ""
+for line in sys.stdin:
+    csv_input += f"{line}\n"
+assert len(csv_input) > 0, "no sacct csv input"
+
+csv_input = StringIO(csv_input)
+
+df = pd.read_csv(csv_input, sep=";", parse_dates=["Eligible", "End", "Start", "Submit"])
 
 
 def parse_duration_string(duration_str):
@@ -57,6 +82,12 @@ df["MaxRSS"] = parse_memory(df["MaxRSS"])
 df["MaxVMSize"] = parse_memory(df["MaxVMSize"])
 df["ReqMem"] = parse_memory(df["ReqMem"])
 
+# exit code
+df["ExitCode"] = df["ExitCode"].str.split(":", expand=True)[1].astype(int)
+
+print(df["ExitCode"])
+exit(0)
+
 for index, result in df.iterrows():
     wandb.init(
         project="msc-thesis",
@@ -66,5 +97,4 @@ for index, result in df.iterrows():
         name=result["JobID"],
         tags=[result["State"]],
     )
-    exit_code = int(result["ExitCode"].split(":")[1])
-    wandb.finish(exit_code=exit_code)
+    wandb.finish(exit_code=result["ExitCode"])
