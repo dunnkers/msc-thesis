@@ -6,6 +6,9 @@
 #SBATCH --mem=10000
 #SBATCH --output=/data/s2995697/slurm/logs/slurm-%A_%a.out
 
+echo "Uploading information on this job to wandb..."
+SACCT_JOB_ID=$SLURM_JOB_ID sh jobs/sacct_to_wandb.sh
+
 echo "Spawning a job to upload logs, as a dependency on this job:"
 sbatch \
     --dependency=afterany:$SLURM_JOB_ID \

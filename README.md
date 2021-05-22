@@ -32,7 +32,7 @@ fseval --multirun \
 From your laptop, run:
 
 ```shell
-ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-1 --job-name=rq-workers src/rq-worker.sh"
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-1 --job-name=rq-workers jobs/rq-worker.sh"
 ```
 
 Check your queue status:
@@ -40,20 +40,15 @@ Check your queue status:
 ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "squeue -u $PEREGRINE_USERNAME"
 ```
 
-Save `sacct` SLURM job information to `/data/<user>/logs/`.
-```shell
-ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "sh ~/msc-thesis/sacct_to_csv.sh > /data/$PEREGRINE_USERNAME/logs/sacct.csv"
-```
-
 To download raw log files:
 ```shell
 rsync -aP $PEREGRINE_USERNAME@peregrine.hpc.rug.nl:/data/$PEREGRINE_USERNAME/slurm/ ./slurm/
 ```
 
-Then upload to wandb using:
+Upload SLURM information to wandb using:
 
 ```shell
-python wandb_sacct_uploader.py
+sh src/sacct_to_csv.sh $SACCT_JOB_ID | python src/sacct_csv_to_wandb.py
 ```
 
 ## Running the RQ dashboard
