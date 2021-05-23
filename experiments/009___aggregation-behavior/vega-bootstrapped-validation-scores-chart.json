@@ -1,0 +1,85 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+    "description": "Plot validation performance of some several bootstrapped subsets.",
+    "data": {
+        "name": "wandb"
+    },
+    "title": "${string:title}",
+    "encoding": {
+        "x": {
+            "field": "${field:step}",
+            "type": "quantitative",
+            "title": "n_features_to_select"
+        },
+        "color": {
+            "type": "nominal",
+            "field": "name",
+            "title": "name"
+        }
+    },
+    "layer": [
+        {
+            "selection": {
+                "grid": {
+                    "type": "interval",
+                    "bind": "scales"
+                }
+            },
+            "mark": {
+                "type": "line",
+                "interpolate": "linear",
+                "strokeOpacity": 0.1,
+                "tooltip": true
+            },
+            "encoding": {
+                "y": {
+                    "field": "${field:lineVal}",
+                    "title": "score",
+                    "type": "quantitative"
+                },
+                "detail": {
+                    "field": "${field:lineKey}"
+                }
+            }
+        },
+        {
+            "selection": {
+                "grid_errorband": {
+                    "type": "interval",
+                    "bind": "scales"
+                }
+            },
+            "mark": {
+                "type": "errorband",
+                "extent": "ci"
+            },
+            "encoding": {
+                "y": {
+                    "field": "${field:lineVal}",
+                    "title": "score",
+                    "type": "quantitative"
+                }
+            }
+        },
+        {
+            "selection": {
+                "grid_mean": {
+                    "type": "interval",
+                    "bind": "scales"
+                }
+            },
+            "mark": {
+                "type": "line",
+                "interpolate": "linear"
+            },
+            "encoding": {
+                "y": {
+                    "aggregate": "mean",
+                    "field": "${field:lineVal}",
+                    "title": "score",
+                    "type": "quantitative"
+                }
+            }
+        }
+    ]
+}
