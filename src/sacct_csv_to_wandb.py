@@ -14,6 +14,8 @@ def parse_duration_string(duration_str):
     duration_str = f"00:{duration_str}" if len(duration_str) == 5 else duration_str
     assert len(duration_str) == 8, f"incorrect duration format: {duration_str}"
 
+    # FIXME convert `1-00:00:00` to day compatible string.
+
     duration = pd.to_timedelta(duration_str)
     duration = duration.total_seconds()
 

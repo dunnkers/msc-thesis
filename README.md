@@ -13,18 +13,35 @@ Install [fseval](https://github.com/dunnkers/fseval). Then run:
 
 ```shell
 fseval --multirun \
-    dataset="iris" \
-    estimator@pipeline.ranker="chi2" \
-    pipeline.n_bootstraps=30 \
-    hydra/launcher=rq \
-    hydra.launcher.enqueue.result_ttl=1d \
-    hydra.launcher.enqueue.failure_ttl=1d \
-    hydra.launcher.stop_after_enqueue=true \
-    # +callbacks.wandb.project="fseval" \
+    "pipeline.n_bootstraps=25" \
+    "dataset=glob(*)" \
+    "estimator@pipeline.ranker=glob(*)" \
+    "++callbacks.wandb.project=fseval" \
+    "++callbacks.wandb.group=cohort-1" \
+    "hydra/launcher=rq" \
+    "hydra.launcher.enqueue.result_ttl=1d" \
+    "hydra.launcher.enqueue.failure_ttl=1d" \
+    "hydra.launcher.stop_after_enqueue=true"
 ```
 
 ... which runs a benchmark on all rankers and all datasets.
 
+
+Learning curve run:
+
+```shell
+fseval --multirun \
+    "pipeline.n_bootstraps=25" \
+    "dataset=synreg_hard" \
+    "pipeline.resample.sample_size=range(0.01, 0.1, 0.01)" \
+    "estimator@pipeline.ranker=glob(*)" \
+    "++callbacks.wandb.project=fseval" \
+    "++callbacks.wandb.group=cohort-1" \
+    "hydra/launcher=rq" \
+    "hydra.launcher.enqueue.result_ttl=1d" \
+    "hydra.launcher.enqueue.failure_ttl=1d" \
+    "hydra.launcher.stop_after_enqueue=true"
+```
 
 ## Running workers on Peregrine
 > Make sure to set the `PEREGRINE_USERNAME` environment variable both locally and on the cluster.
