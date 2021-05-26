@@ -12,7 +12,8 @@ Install [fseval](https://github.com/dunnkers/fseval). Then run:
     hydra.sweep.subdir='${hydra.job.num}' \-->
 
 ```shell
-fseval --multirun \
+fseval \
+    "--multirun" \
     "pipeline.n_bootstraps=25" \
     "dataset=glob(*)" \
     "estimator@pipeline.ranker=glob(*)" \
@@ -30,7 +31,8 @@ fseval --multirun \
 Learning curve run:
 
 ```shell
-fseval --multirun \
+fseval \
+    "--multirun" \
     "pipeline.n_bootstraps=25" \
     "dataset=synreg_hard" \
     "pipeline.resample.sample_size=range(0.01, 0.1, 0.01)" \
@@ -52,6 +54,7 @@ From your laptop, run:
 
 ```shell
 ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; git pull"
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; git log -n 1"
 ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-17 --job-name=rq-workers jobs/rq-worker.sh"
 ```
 
