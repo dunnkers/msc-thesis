@@ -1,3 +1,4 @@
+import re
 import sys
 from io import StringIO
 
@@ -7,19 +8,21 @@ import wandb
 
 
 def parse_duration_string(duration_str):
-    # convert `00:23.254` to `00:23`
-    duration_str = duration_str.split(".")[0]
+    if not duration_str:
+        return duration_str
 
-    # convert `00:23` to `00:00:23` to match "hh:mm:ss" format.
-    duration_str = f"00:{duration_str}" if len(duration_str) == 5 else duration_str
-    assert len(duration_str) == 8, f"incorrect duration format: {duration_str}"
+    match = re.match(r"(?:(\d*)-)?(\d\d:\d\d:\d\d)(?:.(\d*))?", duration_str)
+    assert match is not None, f"incorrect duration format: {duration_str}"
 
-    # FIXME convert `1-00:00:00` to day compatible string.
+    days, hhmmss, ms = match.groups()
 
-    duration = pd.to_timedelta(duration_str)
-    duration = duration.total_seconds()
+    days_duration = pd.to_timedelta(f"{days} days" if days else 0)
+    hhmmss_duration = pd.to_timedelta(hhmmss)
+    ms_duration = pd.to_timedelta(f"{ms} microseconds" if ms else 0)
 
-    return humanfriendly.format_timespan(duration)
+    duration = days_duration + hhmmss_duration + ms_duration
+    duration_seconds = duration.total_seconds()
+    return duration_seconds
 
 
 def parse_duration(series):
@@ -27,7 +30,10 @@ def parse_duration(series):
 
 
 def parse_memory_string(memory_str):
-    return humanfriendly.format_size(humanfriendly.parse_size(memory_str))
+    if not memory_str:
+        return memory_str
+
+    return humanfriendly.parse_size(memory_str) / 1e6
 
 
 def parse_memory(series):
@@ -64,7 +70,8 @@ def construct_df(csv_input):
     df["ReqMem"] = parse_memory(df["ReqMem"])
 
     # exit code
-    df["ExitCode"] = df["ExitCode"].str.split(":", expand=True)[1].astype(int)
+    parse_exit_code = lambda exit_code_str: int(exit_code_str.split(":")[1])
+    df["ExitCode"] = df["ExitCode"].dropna().apply(parse_exit_code)
 
     return df
 
