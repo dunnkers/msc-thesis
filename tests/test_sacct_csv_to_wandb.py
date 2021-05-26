@@ -21,6 +21,9 @@ def test_parse_duration_str():
     duration = parse_duration_string("0-00:00:00.234")
     assert duration == 0.000234
 
+    duration = parse_duration_string("00:36.305")
+    assert duration == 36.000305
+
 
 def test_parse_memory_string():
     memory = parse_memory_string(None)

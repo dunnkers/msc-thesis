@@ -11,10 +11,12 @@ def parse_duration_string(duration_str):
     if not duration_str:
         return duration_str
 
-    match = re.match(r"(?:(\d*)-)?(\d\d:\d\d:\d\d)(?:.(\d*))?", duration_str)
+    match = re.match(r"(?:(\d*)-)?((?:\d\d:)?\d\d:\d\d)(?:.(\d*))?", duration_str)
     assert match is not None, f"incorrect duration format: {duration_str}"
 
     days, hhmmss, ms = match.groups()
+    if not re.match(r"\d\d:\d\d:\d\d", hhmmss):
+        hhmmss = f"00:{hhmmss}"
 
     days_duration = pd.to_timedelta(f"{days} days" if days else 0)
     hhmmss_duration = pd.to_timedelta(hhmmss)
@@ -85,7 +87,9 @@ if __name__ == "__main__":
     csv_input = StringIO(csv_input)
 
     # construct df
+    print("constructing pandas dataframe...")
     df = construct_df(csv_input)
+    print("dataframe constructed ✓")
 
     # upload to wandb
     for index, result in df.iterrows():
