@@ -68,6 +68,12 @@ Upload SLURM information to wandb using:
 sh src/sacct_to_csv.sh $SACCT_JOB_ID | python src/sacct_csv_to_wandb.py
 ```
 
+per job, on the cluster. Or for all jobs, on Peregrine:
+
+```shell
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sh src/sacct_to_csv.sh" | python src/sacct_csv_to_wandb.py
+```
+
 ## Running the RQ dashboard
 ```shell
 rq-dashboard -u $REDIS_URL
