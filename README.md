@@ -15,13 +15,12 @@ Install [fseval](https://github.com/dunnkers/fseval). Then run:
 fseval \
     "--multirun" \
     "pipeline.n_bootstraps=25" \
-    "dataset=glob(*)" \
+    "dataset=synclf_easy,synclf_medium,synclf_hard,synclf_very_hard" \
     "estimator@pipeline.ranker=glob(*)" \
     "++callbacks.wandb.project=fseval" \
     "++callbacks.wandb.group=cohort-1" \
     "hydra/launcher=rq" \
     "hydra.launcher.enqueue.result_ttl=1d" \
-    "hydra.launcher.enqueue.failure_ttl=1d" \
     "hydra.launcher.stop_after_enqueue=true"
 ```
 
@@ -34,14 +33,13 @@ Learning curve run:
 fseval \
     "--multirun" \
     "pipeline.n_bootstraps=25" \
-    "dataset=synreg_hard" \
+    "dataset=synclf_hard" \
     "pipeline.resample.sample_size=range(0.01, 0.1, 0.01)" \
     "estimator@pipeline.ranker=glob(*)" \
     "++callbacks.wandb.project=fseval" \
     "++callbacks.wandb.group=cohort-1" \
     "hydra/launcher=rq" \
     "hydra.launcher.enqueue.result_ttl=1d" \
-    "hydra.launcher.enqueue.failure_ttl=1d" \
     "hydra.launcher.stop_after_enqueue=true"
 ```
 
@@ -55,7 +53,7 @@ From your laptop, run:
 ```shell
 ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; git pull"
 ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; git log -n 1"
-ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-17 --job-name=rq-workers jobs/rq-worker.sh"
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-1 --job-name=rq-workers jobs/rq-worker.sh"
 ```
 
 A small test worker run can be started like so:
