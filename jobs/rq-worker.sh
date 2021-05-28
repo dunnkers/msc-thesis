@@ -13,6 +13,7 @@ sbatch \
     jobs/sacct_to_wandb.sh
 
 echo "Running worker in directory:"
+cd /scratch/s2995697/fseval/
 pwd
 
 module load Python/3.8.6-GCCcore-10.2.0
