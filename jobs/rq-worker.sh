@@ -4,6 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --partition=regular
 #SBATCH --mem=10000
+#SBATCH --chdir=/scratch/s2995697/fseval/
 #SBATCH --output=/data/s2995697/slurm/logs/slurm-%A_%a.out
 
 echo "Spawning a job to upload logs, as a dependency on this job:"
@@ -13,7 +14,6 @@ sbatch \
     jobs/sacct_to_wandb.sh
 
 echo "Running worker in directory:"
-cd /scratch/s2995697/fseval/
 pwd
 
 module load Python/3.8.6-GCCcore-10.2.0
