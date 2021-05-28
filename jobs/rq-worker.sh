@@ -11,7 +11,7 @@ echo "Spawning a job to upload logs, as a dependency on this job:"
 sbatch \
     --dependency=afterany:$SLURM_JOB_ID \
     --export=SACCT_JOB_ID=$SLURM_JOB_ID \
-    jobs/sacct_to_wandb.sh
+    /home/s2995697/msc-thesis/jobs/sacct_to_wandb.sh
 
 echo "Running worker in directory:"
 pwd
