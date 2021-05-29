@@ -1,27 +1,34 @@
-# mleval
-A Machine Learning benchmarking library. Neatly integrates with wandb and sklearn. Uses Hydra as a config parser.
+# msc-thesis
+Benchmarking feature rankers using [fseval](https://github.com/dunnkers/fseval).
 
 
 
 ## Enqueueing jobs
+Run:
+
+```shell
+pg -t 'sh /home/$PEREGRINE_USERNAME/msc-thesis/jobs/prepare_fseval_env.sh'
+```
+
+(see Peregrine [wiki page](https://github.com/dunnkers/msc-thesis/wiki/Peregrine#cli-aliases-and-shortcuts) for command-line aliases)
+
+## Enqueueing jobs
 Install [fseval](https://github.com/dunnkers/fseval). Then run:
-    <!-- # hydra.run.dir="/Users/dunnkers/Downloads/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}" \
-    # hydra.sweep.dir="/Users/dunnkers/Downloads/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}" \ -->
-    <!-- hydra.run.dir='/data/${oc.env:PEREGRINE_USERNAME}/fseval/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}' \
-    hydra.sweep.dir='/data/${oc.env:PEREGRINE_USERNAME}/fseval/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}' \ 
-    hydra.sweep.subdir='${hydra.job.num}' \-->
+
+```shell
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl -t "srun --ntasks=1 --time=00:30:00 --partition=short --pty bash -i"
+```
 
 ```shell
 fseval \
-    "--multirun" \
-    "pipeline.n_bootstraps=25" \
-    "dataset=synclf_easy,synclf_medium,synclf_hard,synclf_very_hard" \
-    "estimator@pipeline.ranker=glob(*)" \
-    "++callbacks.wandb.project=fseval" \
+    --multirun \
+    --config-dir conf \
+    +experiment=rq \
+    pipeline.n_bootstraps=25 \
+    dataset="glob(*)" \
+    "estimator@pipeline.ranker=xgb,multisurf,boruta" \
     "++callbacks.wandb.group=cohort-1" \
-    "hydra/launcher=rq" \
-    "hydra.launcher.enqueue.result_ttl=1d" \
-    "hydra.launcher.stop_after_enqueue=true"
+    "++callbacks.wandb.group=fseval"
 ```
 
 ... which runs a benchmark on all rankers and all datasets.
@@ -31,16 +38,15 @@ Learning curve run:
 
 ```shell
 fseval \
-    "--multirun" \
+    --multirun \
+    --config-dir conf \
+    +experiment=rq \
     "pipeline.n_bootstraps=25" \
-    "dataset=synclf_hard" \
+    "dataset=glob(*)" \
     "pipeline.resample.sample_size=range(0.01, 0.1, 0.01)" \
-    "estimator@pipeline.ranker=glob(*)" \
+    "estimator@pipeline.ranker=boruta" \
     "++callbacks.wandb.project=fseval" \
     "++callbacks.wandb.group=cohort-1" \
-    "hydra/launcher=rq" \
-    "hydra.launcher.enqueue.result_ttl=1d" \
-    "hydra.launcher.stop_after_enqueue=true"
 ```
 
 ⚠️ Mind carefully: when using the RQ launcher jobs **must** be launched in exactly the same environment as in which the jobs will eventually run: this has to do with how `cloudpickle` works: the serializer and deserializer of the jobs to- and from Redis.
@@ -53,7 +59,15 @@ From your laptop, run:
 ```shell
 ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; git pull"
 ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; git log -n 1"
-ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-1 --job-name=rq-workers jobs/rq-worker.sh"
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-2 --job-name=rq-worker jobs/rq-worker.sh"
+```
+
+(peregrine folders can be mounted like so:)
+
+```shell
+sudo sshfs -o allow_other,default_permissions,IdentityFile=~/.ssh/id_rsa $PEREGRINE_USERNAME@peregrine.hpc.rug.nl:/home/$PEREGRINE_USERNAME /Users/dunnkers/mnt/peregrine/home
+sudo sshfs -o allow_other,default_permissions,IdentityFile=~/.ssh/id_rsa $PEREGRINE_USERNAME@peregrine.hpc.rug.nl:/data/$PEREGRINE_USERNAME /Users/dunnkers/mnt/peregrine/data
+sudo sshfs -o allow_other,default_permissions,IdentityFile=~/.ssh/id_rsa $PEREGRINE_USERNAME@peregrine.hpc.rug.nl:/scratch/$PEREGRINE_USERNAME /Users/dunnkers/mnt/peregrine/scratch
 ```
 
 A small test worker run can be started like so:

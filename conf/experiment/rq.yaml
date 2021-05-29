@@ -1,0 +1,10 @@
+# @package _global_
+defaults:
+  - override /hydra/launcher: rq
+
+hydra:
+  launcher:
+    enqueue:
+      result_ttl: 1d
+      failure_ttl: 60d
+    stop_after_enqueue: true
