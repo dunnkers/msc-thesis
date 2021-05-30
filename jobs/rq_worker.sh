@@ -21,7 +21,6 @@ venv_dir=$TMPDIR/venv_$SLURM_JOB_ID
 python -m venv $venv_dir
 source $venv_dir/bin/activate
 pip install rq
-pip install git+https://github.com/dunnkers/fseval.git@master
-pip install git+https://github.com/dunnkers/slurm-to-wandb.git@master
 pip install -e git+https://github.com/dunnkers/hydra.git@master#egg=hydra_rq_launcher&subdirectory=plugins/hydra_rq_launcher
+pip install git+https://github.com/dunnkers/fseval.git@master
 rq worker -u $REDIS_URL
