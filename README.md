@@ -87,7 +87,7 @@ sudo sshfs -o allow_other,default_permissions,IdentityFile=~/.ssh/id_rsa $PEREGR
 
 A small test worker run can be started like so:
 ```shell
-ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-1 --job-name=rq-workers --time=00:30:00 --partition=short jobs/rq-worker.sh"
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-1 --job-name=rq-worker --time=00:30:00 --partition=short jobs/rq_worker.sh"
 ```
 
 Check your queue status:
