@@ -23,4 +23,5 @@ source $venv_dir/bin/activate
 pip install rq
 pip install -e git+https://github.com/dunnkers/hydra.git@master#egg=hydra_rq_launcher&subdirectory=plugins/hydra_rq_launcher
 pip install git+https://github.com/dunnkers/fseval.git@master
+pip install hydra-core
 rq worker -u $REDIS_URL
