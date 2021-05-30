@@ -11,5 +11,5 @@ module load Python/3.8.6-GCCcore-10.2.0
 venv_dir=$TMPDIR/venv_$SLURM_JOB_ID
 python -m venv $venv_dir
 source $venv_dir/bin/activate
-pip install humanfriendly pandas wandb
-sh src/sacct_to_csv.sh $SACCT_JOB_ID | python src/sacct_csv_to_wandb.py
+pip install git+https://github.com/dunnkers/slurm-to-wandb.git@master
+slurm_to_wandb $SLURM_JOB_ID
