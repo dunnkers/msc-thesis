@@ -7,7 +7,7 @@ Benchmarking feature rankers using [fseval](https://github.com/dunnkers/fseval).
 Run:
 
 ```shell
-pg -t 'sh /home/$PEREGRINE_USERNAME/msc-thesis/jobs/prepare_fseval_env.sh'
+pg -t 'sh /home/$PEREGRINE_USERNAME/msc-thesis/jobs/prepare_fseval_env.sh; bash -l'
 ```
 
 (see Peregrine [wiki page](https://github.com/dunnkers/msc-thesis/wiki/Peregrine#cli-aliases-and-shortcuts) for command-line aliases)
@@ -26,10 +26,25 @@ fseval \
     +experiment=rq \
     pipeline.n_bootstraps=25 \
     dataset="glob(*)" \
-    "estimator@pipeline.ranker=xgb,multisurf,boruta" \
+    "estimator@pipeline.ranker=featboost" \
     "++callbacks.wandb.group=cohort-1" \
     "++callbacks.wandb.group=fseval"
 ```
+
+```shell
+fseval \
+    "--multirun" \
+    "pipeline.n_bootstraps=25" \
+    "dataset=glob(*)" \
+    "estimator@pipeline.ranker=featboost" \
+    "++callbacks.wandb.project=fseval" \
+    "++callbacks.wandb.group=cohort-1" \
+    "hydra/launcher=rq" \
+    "hydra.launcher.enqueue.result_ttl=1d" \
+    "hydra.launcher.enqueue.failure_ttl=60d" \
+    "hydra.launcher.stop_after_enqueue=true"
+```
+
 
 ... which runs a benchmark on all rankers and all datasets.
 
@@ -59,7 +74,7 @@ From your laptop, run:
 ```shell
 ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; git pull"
 ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; git log -n 1"
-ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-2 --job-name=rq-worker jobs/rq-worker.sh"
+ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl "cd msc-thesis; sbatch --array=0-3 --job-name=rq-worker jobs/rq_worker.sh"
 ```
 
 (peregrine folders can be mounted like so:)
