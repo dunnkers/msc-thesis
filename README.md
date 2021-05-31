@@ -21,48 +21,35 @@ ssh $PEREGRINE_USERNAME@peregrine.hpc.rug.nl -t "srun --ntasks=1 --time=00:30:00
 
 ```shell
 fseval \
-    --multirun \
-    --config-dir conf \
-    +experiment=rq \
-    pipeline.n_bootstraps=25 \
-    dataset="glob(*)" \
-    "estimator@pipeline.ranker=featboost" \
-    "++callbacks.wandb.group=cohort-1" \
-    "++callbacks.wandb.group=fseval"
-```
-
-```shell
-fseval \
     "--multirun" \
     "pipeline.n_bootstraps=25" \
-    "dataset=glob(*)" \
+    "dataset=iris" \
     "estimator@pipeline.ranker=featboost" \
-    "++callbacks.wandb.project=fseval" \
+    "++callbacks.wandb.project=fseval-test" \
     "++callbacks.wandb.group=cohort-1" \
     "hydra/launcher=rq" \
     "hydra.launcher.enqueue.result_ttl=1d" \
     "hydra.launcher.enqueue.failure_ttl=60d" \
-    "hydra.launcher.stop_after_enqueue=true"
+    "hydra.launcher.stop_after_enqueue=true" \
+    "hydra.launcher.fail_hard=true"
 ```
 
-
-... which runs a benchmark on all rankers and all datasets.
-
-
-Learning curve run:
-
+SLURM submitit launcher:
 ```shell
 fseval \
-    --multirun \
-    --config-dir conf \
-    +experiment=rq \
+    "--multirun" \
     "pipeline.n_bootstraps=25" \
-    "dataset=glob(*)" \
-    "pipeline.resample.sample_size=range(0.01, 0.1, 0.01)" \
-    "estimator@pipeline.ranker=boruta" \
-    "++callbacks.wandb.project=fseval" \
+    "dataset=iris" \
+    "estimator@pipeline.ranker=featboost" \
+    "++callbacks.wandb.project=fseval-test" \
     "++callbacks.wandb.group=cohort-1" \
+    "hydra/launcher=rq" \
+    "hydra.launcher.enqueue.result_ttl=1d" \
+    "hydra.launcher.enqueue.failure_ttl=60d" \
+    "hydra.launcher.stop_after_enqueue=true" \
+    "hydra.launcher.fail_hard=true"
 ```
+
 
 ⚠️ Mind carefully: when using the RQ launcher jobs **must** be launched in exactly the same environment as in which the jobs will eventually run: this has to do with how `cloudpickle` works: the serializer and deserializer of the jobs to- and from Redis.
 
