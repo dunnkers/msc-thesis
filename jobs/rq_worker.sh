@@ -8,9 +8,9 @@
 #SBATCH --output=/data/s2995697/slurm/logs/slurm-%A_%a.out
 
 if [ -n "${SLURM_ARRAY_JOB_ID+set}" ]; then
-    job_id=$SLURM_ARRAY_JOB_ID
+    export job_id=$SLURM_ARRAY_JOB_ID
 else
-    job_id=$SLURM_JOB_ID
+    export job_id=$SLURM_JOB_ID
 fi
 echo "This job has id: $job_id"
 
