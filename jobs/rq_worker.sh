@@ -7,21 +7,14 @@
 #SBATCH --chdir=/scratch/s2995697/fseval/
 #SBATCH --output=/data/s2995697/slurm/logs/slurm-%A_%a.out
 
-echo "Spawning a job to upload logs, as a dependency on this job:"
+echo "Spawning a job to upload logs, as a dependency on this job (id $SLURM_JOB_ID):"
 sbatch \
     --dependency=afterany:$SLURM_JOB_ID \
     --export=SACCT_JOB_ID=$SLURM_JOB_ID \
-    /home/s2995697/msc-thesis/jobs/sacct_to_wandb.sh
+    ~/msc-thesis/jobs/upload_logs.sh
 
 echo "Running worker in directory:"
 pwd
 
-module load Python/3.8.6-GCCcore-10.2.0
-venv_dir=$TMPDIR/venv_$SLURM_JOB_ID
-python -m venv $venv_dir
-source $venv_dir/bin/activate
-python -m pip install --upgrade pip
-pip install -e git+https://github.com/dunnkers/hydra.git@plugins/rq-launcher/fail-hard#"egg=hydra_rq_launcher&subdirectory=plugins/hydra_rq_launcher"
-# pip install -e git+https://github.com/facebookresearch/hydra.git@master#"egg=hydra_submitit_launcher&subdirectory=plugins/hydra_submitit_launcher"
-pip install git+https://github.com/dunnkers/fseval.git@master
+sh ~/msc-thesis/jobs/_prepare_env.sh
 rq worker -u $REDIS_URL
