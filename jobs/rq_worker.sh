@@ -7,14 +7,21 @@
 #SBATCH --chdir=/scratch/s2995697/fseval/
 #SBATCH --output=/data/s2995697/slurm/logs/slurm-%A_%a.out
 
-echo "Spawning a job to upload logs, as a dependency on this job (id $SLURM_JOB_ID):"
+if [ -n "${SLURM_ARRAY_JOB_ID+set}" ]; then
+    job_id=$SLURM_ARRAY_JOB_ID
+else
+    job_id=$SLURM_JOB_ID
+fi
+echo "This job has id: $job_id"
+
+echo "Spawning a job to upload logs, as a dependency on this job."
 sbatch \
-    --dependency=afterany:$SLURM_JOB_ID \
-    --export=SACCT_JOB_ID=$SLURM_JOB_ID \
+    --dependency=afterany:$job_id \
+    --export=SACCT_JOB_ID=$job_id \
     ~/msc-thesis/jobs/upload_logs.sh
 
-echo "Running worker in directory:"
-pwd
-
+echo "Requesting to prepare the worker environment..."
 sh ~/msc-thesis/jobs/_prepare_env.sh
+
+echo "Running rq worker..."
 rq worker -u $REDIS_URL

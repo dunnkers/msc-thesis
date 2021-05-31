@@ -6,7 +6,7 @@ Install [fseval](https://github.com/dunnkers/fseval). Then run:
 
 <!-- pg -t 'sh ~/msc-thesis/jobs/prepare_fseval_env.sh; bash -l' -->
 ```shell
-pg -t "srun --ntasks=1 --time=00:30:00 --mem=5000 --partition=short --pty sh ~/msc-thesis/jobs/_prepare_env.sh; bash -i"
+pg -t "srun --ntasks=1 --time=00:30:00 --mem=5000 --chdir=/scratch/s2995697/fseval/ --partition=short --pty sh ~/msc-thesis/jobs/_prepare_env.sh && bash -i"
 module load Python/3.8.6-GCCcore-10.2.0
 fseval \
     "--multirun" \
@@ -34,7 +34,7 @@ From your laptop, run:
 ```shell
 pg "cd msc-thesis; git pull"
 pg "cd msc-thesis; git log -n 1"
-pg "sbatch --array=0-3 --job-name=rq-worker ~/msc-thesis/jobs/rq_worker.sh"
+pg "sbatch --array=0 --job-name=rq-worker ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
 
