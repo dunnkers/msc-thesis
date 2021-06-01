@@ -1,9 +1,11 @@
 #!/bin/bash
 echo "preparing fseval environment in directory:"
 pwd
-module load Python/3.8.6-GCCcore-10.2.0
 
-venv_dir=$TMPDIR/venv_$job_id
+module load Python/3.8.6-GCCcore-10.2.0
+sh ~/msc-thesis/jobs/_set_jobid.sh
+venv_dir=$TMPDIR/venv_$JOB_ID
+
 echo "creating clean virtual environment (in $venv_dir)..."
 rm -rf $venv_dir
 python -m venv $venv_dir

@@ -8,9 +8,9 @@ Install [fseval](https://github.com/dunnkers/fseval). Then run:
 pg -t "srun --ntasks=1 --time=00:30:00 --mem=5000 --chdir=/scratch/s2995697/fseval/ --partition=short --pty bash -i"
 
 sh ~/msc-thesis/jobs/_prepare_env.sh
-
 module load Python/3.8.6-GCCcore-10.2.0
-source $venv_dir/bin/activate
+source $TMPDIR/venv_$JOB_ID/bin/activate
+
 fseval \
     "--multirun" \
     "pipeline.n_bootstraps=25" \
