@@ -9,13 +9,13 @@
 
 echo "Running RQ worker job ✨"
 
-echo "(1) Spawning a job to upload logs, as a dependency on this job."
+echo "(1) 📚 Spawning a job to upload logs ..."
 sh ~/msc-thesis/jobs/_spawn_upload_logs_job.sh
 
-echo "(2) Requesting to prepare the worker environment..."
+echo "(2) 🔧 Requesting to prepare the worker environment ..."
 sh ~/msc-thesis/jobs/_prepare_env.sh
 module load Python/3.8.6-GCCcore-10.2.0
 source $TMPDIR/venv_${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}/bin/activate
 
-echo "(3) Running rq worker..."
+echo "(3) 🚀 Running rq worker ..."
 rq worker -u $REDIS_URL
