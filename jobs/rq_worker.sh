@@ -7,7 +7,7 @@
 #SBATCH --chdir=/scratch/s2995697/fseval/
 #SBATCH --output=/data/s2995697/slurm/logs/slurm-%A_%a.out
 
-echo -e "Running \e[33mRQ worker\e[0m job ✨"
+echo -e "Running RQ worker job ✨"
 
 echo "(1) 📚 Spawning a job to upload logs ..."
 sh ~/msc-thesis/jobs/_spawn_upload_logs_job.sh

@@ -1,11 +1,11 @@
 #!/bin/bash
 
 if [ -n "${SLURM_ARRAY_TASK_ID+set}" ]; then
-    JOB_ID=${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}
-    echo -e "→ current job is \e[33mpart of a job array\e[0m."
+    JOB_ID=${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+    echo "→ current job is part of a job array."
 else
     JOB_ID=${SLURM_JOB_ID}
-    echo -e "→ current job is \e[33mstandalone\e[0m."
+    echo "→ current job is standalone."
 fi
 
 echo "Scheduling 'logs upload' job as a dependency on job: $JOB_ID"
