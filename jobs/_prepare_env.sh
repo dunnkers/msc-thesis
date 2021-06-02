@@ -29,7 +29,7 @@ pip install --quiet \
     skrebate==0.62 \
     xgboost==1.4.2 \
     Boruta==0.3 \
-    featboost @ git+https://github.com/dunnkers/FeatBoost.git@support-cloning \
-    stability-selection @ git+https://github.com/dunnkers/stability-selection.git@master \
-    matplotlib==3.4.2 \
+    git+https://github.com/dunnkers/FeatBoost.git@support-cloning \
+    git+https://github.com/dunnkers/stability-selection.git@master \
+    matplotlib==3.4.2
 echo "fseval estimators installed ✓"
