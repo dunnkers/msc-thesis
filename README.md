@@ -9,7 +9,7 @@ pg -t "srun --ntasks=1 --time=00:30:00 --mem=5000 --chdir=/scratch/s2995697/fsev
 
 sh ~/msc-thesis/jobs/_prepare_env.sh
 module load Python/3.8.6-GCCcore-10.2.0
-source $TMPDIR/venv_$JOB_ID/bin/activate
+source $TMPDIR/venv_${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}/bin/activate
 
 fseval \
     "--multirun" \
