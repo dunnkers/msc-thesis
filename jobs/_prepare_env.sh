@@ -31,5 +31,6 @@ pip install --quiet \
     Boruta==0.3 \
     git+https://github.com/dunnkers/FeatBoost.git@support-cloning \
     git+https://github.com/dunnkers/stability-selection.git@master \
-    matplotlib==3.4.2
+    matplotlib==3.4.2 \
+    git+https://github.com/dunnkers/infinite-selection.git@master
 echo "fseval estimators installed ✓"
