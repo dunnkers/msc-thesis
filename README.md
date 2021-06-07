@@ -36,7 +36,7 @@ From your laptop, run:
 
 ```shell
 pg "cd msc-thesis; git pull && git log -n 1"
-pg "sbatch --array=0 --time=72:00:00 --job-name=rq-worker ~/msc-thesis/jobs/rq_worker.sh"
+pg "sbatch --array=0-1 --time=72:00:00 --job-name=rq-worker ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
 
