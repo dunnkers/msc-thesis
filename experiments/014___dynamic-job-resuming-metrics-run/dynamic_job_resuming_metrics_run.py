@@ -1,6 +1,9 @@
 #%%
+import os
 import re
+import subprocess
 import sys
+from subprocess import PIPE, Popen
 
 import pandas as pd
 import wandb
@@ -59,6 +62,30 @@ for run in runs:
 
     config = run.config
 
+    ### grabbing the run dir
+    script_dir = "~/msc-thesis/experiments/014___dynamic-job-resuming-metrics-run"
+    username = os.environ.get("PEREGRINE_USERNAME")
+    # fetch run dir
+    script_path = f"{script_dir}/get_run_path.sh"
+    stdout, stderr = Popen(
+        ["ssh", f"{username}@peregrine.hpc.rug.nl", f"sh {script_path} {run.id}"],
+        stdout=PIPE,
+    ).communicate()
+    run_dir = stdout.decode("utf-8").replace("\n", "")
+    # verify run dir
+    script_path = f"{script_dir}/verify_path.sh"
+    stdout, stderr = Popen(
+        ["ssh", f"{username}@peregrine.hpc.rug.nl", f"sh {script_path} {run_dir}"],
+        stdout=PIPE,
+    ).communicate()
+    verified = stdout.decode("utf-8").replace("\n", "")
+    if verified != "true":
+        print(TerminalColor.red(f"incorrect run dir: {run_dir}"))
+        continue
+
+    if writing_to_file:
+        print("-> found `run_dir`: " + TerminalColor.yellow(run_dir))
+
     dataset_name = config["dataset"]["name"]
     dataset = dataset_mapping[dataset_name]
     ranker_name = config["ranker"]["name"]
@@ -69,6 +96,7 @@ for run in runs:
     print(
         f"""fseval --multirun \
 "++callbacks.wandb.id={run.id}" \
+"++storage_provider.local_dir={run_dir}" \
 dataset={dataset} \
 "estimator@pipeline.ranker={ranker}" \
 pipeline.n_bootstraps=25 \
