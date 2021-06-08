@@ -1,4 +1,5 @@
-run_dir=$(find /scratch/$PEREGRINE_USERNAME/fseval/multirun -maxdepth 5 -name * | tail -n 1)
+search_dir=/scratch/$PEREGRINE_USERNAME/fseval/multirun
+run_dir=$(find $search_dir -maxdepth 5 -name *$1 | tail -n 1)
 run_dir_abs=$(realpath $run_dir)
 run_dir_files=$run_dir_abs/files
 has_pickle=$(find $run_dir_files -name *.pickle -print | head -n 1 | wc -l)
