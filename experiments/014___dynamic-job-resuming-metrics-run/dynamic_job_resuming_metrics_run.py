@@ -9,33 +9,33 @@ import pandas as pd
 import wandb
 from fseval.types import TerminalColor
 
-print("importing hydra utils...", end=" ")
+print("importing hydra utils...")
 from fseval.utils.hydra_utils import get_group_configs, get_group_options
 
-print(TerminalColor.green("✓"))
+print("hydra utils imported " + TerminalColor.green("✓"))
 
 GROUP = "cohort-1"
 
 # construct dataset mapping
-print("Constructing dataset mapping...", end=" ")
+print("Constructing dataset mapping...")
 dataset_cfgs = get_group_configs("dataset")
 dataset_names = [dataset_cfg.get("name") for dataset_cfg in dataset_cfgs]
 dataset_options = get_group_options("dataset")
 dataset_mapping = dict(zip(dataset_names, dataset_options))
-print(TerminalColor.green("✓"))
+print("dataset mapping constructed " + TerminalColor.green("✓"))
 
 # construct estimator mapping
-print("Constructing estimator mapping...", end=" ")
+print("Constructing estimator mapping...")
 estimator_cfgs = get_group_configs("estimator")
 estimator_names = [estimator_cfg.get("name") for estimator_cfg in estimator_cfgs]
 estimator_options = get_group_options("estimator")
 estimator_mapping = dict(zip(estimator_names, estimator_options))
-print(TerminalColor.green("✓"))
+print("estimator mapping constructed " + TerminalColor.green("✓"))
 
 # retrieve runs from API
 api = wandb.Api()
 runs = api.runs("dunnkers/fseval", filters={"$or": [{"group": GROUP}]})
-print(f"Found {len(runs)} runs.")
+print(f"Found {TerminalColor.yellow(str(len(runs)))} runs.")
 
 # stdout
 original_stdout = sys.stdout
@@ -79,12 +79,34 @@ for run in runs:
         stdout=PIPE,
     ).communicate()
     verified = stdout.decode("utf-8").replace("\n", "")
+    # has cache
+    stdout, stderr = Popen(
+        ["ssh", f"{username}@peregrine.hpc.rug.nl", f"ls {run_dir}/*.pickle | wc -l"],
+        stdout=PIPE,
+    ).communicate()
+    n_cached = stdout.decode("utf-8").replace("\n", "")
+    n_cached = int(n_cached)
+
     if verified != "true":
         print(TerminalColor.red(f"incorrect run dir: {run_dir}"))
         continue
 
+    if not (n_cached > 0):
+        print(
+            TerminalColor.purple(
+                "⚠️ " + str(n_cached) + f" pickle files in dir: {run_dir}"
+            )
+        )
+        continue
+
     if writing_to_file:
-        print("-> found `run_dir`: " + TerminalColor.yellow(run_dir))
+        print(
+            TerminalColor.green("✓")
+            + " found "
+            + TerminalColor.cyan(str(n_cached))
+            + " pickle files in dir: "
+            + TerminalColor.yellow(run_dir)
+        )
 
     dataset_name = config["dataset"]["name"]
     dataset = dataset_mapping[dataset_name]
@@ -100,6 +122,7 @@ for run in runs:
 dataset={dataset} \
 "estimator@pipeline.ranker={ranker}" \
 pipeline.n_bootstraps=25 \
+pipeline.n_jobs=1 \
 "++callbacks.wandb.log_metrics=false" \
 "++callbacks.wandb.project=fseval" \
 "++callbacks.wandb.group=cohort-1" \
