@@ -54,7 +54,7 @@ def get_peregrine_output(cmd):
 
     stdout, stderr = Popen(cmds, stdout=PIPE).communicate()
 
-    output = stdout.decode("utf-8").split("\n")[-1]
+    output = stdout.decode("utf-8").split("\n")
     return output
 
 
@@ -80,10 +80,26 @@ for run in runs:
     script_dir = f"/home/{os.environ.get('PEREGRINE_USERNAME')}/msc-thesis/jobs"
     # fetch run dir
     print(f"executing `sh {script_dir}/_get_run_path.sh {run.id}`")
-    run_dir = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
+    output = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
+    result = output[-2]
 
-    if run_dir == "fail":
-        print(TerminalColor.red(f"incorrect run dir: {run_dir}"))
+    if result == "fail" or result == "":
+        print(TerminalColor.red(f"incorrect result: {result}"))
+        continue
+
+    run_dir = result
+    n_pickles = int(output[-3])
+    p = int(config["dataset"]["p"])
+    n_bootstraps = int(config["n_bootstraps"])
+    n_validations = min(50, p)
+    n_pickles_should_be = n_bootstraps * n_validations + n_bootstraps
+    if n_pickles != n_pickles_should_be:
+        print(
+            TerminalColor.red(
+                f"incorrect n_pickles: "
+                + f"expected {n_pickles_should_be}, was {n_pickles}"
+            )
+        )
         continue
 
     if writing_to_file:
