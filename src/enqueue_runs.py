@@ -43,6 +43,21 @@ if writing_to_file:
     outputfile = sys.argv[1]
     f = open(outputfile, "w")
 
+
+def get_peregrine_output(cmd):
+    cmds = []
+    username = os.environ.get("PEREGRINE_USERNAME")
+    if os.environ.get("LMOD_sys", "") == "Linux":
+        cmds = ["ssh", f"{username}@peregrine.hpc.rug.nl", cmd]
+    else:
+        cmds = cmd.split(" ")
+
+    stdout, stderr = Popen(cmds, stdout=PIPE).communicate()
+
+    output = stdout.decode("utf-8").replace("\n", "")
+    return output
+
+
 #%%
 print("processing runs...")
 df = pd.DataFrame()
@@ -62,28 +77,15 @@ for run in runs:
     config = run.config
 
     ### grabbing the run dir
-    script_dir = "~/msc-thesis/experiments/014___dynamic-job-resuming-metrics-run"
-    username = os.environ.get("PEREGRINE_USERNAME")
+    script_dir = "~/msc-thesis/jobs"
     # fetch run dir
-    script_path = f"{script_dir}/get_run_path.sh"
-    stdout, stderr = Popen(
-        ["ssh", f"{username}@peregrine.hpc.rug.nl", f"sh {script_path} {run.id}"],
-        stdout=PIPE,
-    ).communicate()
-    run_dir = stdout.decode("utf-8").replace("\n", "")
+    run_dir = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
     # verify run dir
-    script_path = f"{script_dir}/verify_path.sh"
-    stdout, stderr = Popen(
-        ["ssh", f"{username}@peregrine.hpc.rug.nl", f"sh {script_path} {run_dir}"],
-        stdout=PIPE,
-    ).communicate()
-    verified = stdout.decode("utf-8").replace("\n", "")
+    verified = get_peregrine_output(f"sh {script_dir}/_verify_run_path.sh {run_dir}")
     # has cache
-    stdout, stderr = Popen(
-        ["ssh", f"{username}@peregrine.hpc.rug.nl", f"ls {run_dir}/*.pickle | wc -l"],
-        stdout=PIPE,
-    ).communicate()
-    n_cached = stdout.decode("utf-8").replace("\n", "")
+    n_cached = get_peregrine_output(
+        f"find {run_dir} -name *.pickle -print | head -n 1 | wc -l"
+    )
     n_cached = int(n_cached)
 
     if verified != "true":
