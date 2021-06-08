@@ -77,7 +77,7 @@ for run in runs:
     config = run.config
 
     ### grabbing the run dir
-    script_dir = f"/home/{os.environ.get("PEREGRINE_USERNAME")}/msc-thesis/jobs"
+    script_dir = f"/home/{os.environ.get('PEREGRINE_USERNAME')}/msc-thesis/jobs"
     # fetch run dir
     run_dir = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
     # verify run dir
