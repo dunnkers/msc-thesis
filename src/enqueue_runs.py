@@ -79,6 +79,7 @@ for run in runs:
     ### grabbing the run dir
     script_dir = f"/home/{os.environ.get('PEREGRINE_USERNAME')}/msc-thesis/jobs"
     # fetch run dir
+    print(f"executing `sh {script_dir}/_get_run_path.sh {run.id}`")
     run_dir = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
 
     if run_dir == "fail":
