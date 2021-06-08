@@ -19,7 +19,7 @@ source $TMPDIR/venv_${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}/bin/activate
 
 echo "(3) 📊 Fetching runs and storing enqueueing script ..."
 python \
-    ~/msc-thesis/experiments/014___dynamic-job-resuming-metrics-run/dynamic_job_resuming_metrics_run.py \
+    ~/msc-thesis/src/enqueue_runs.py \
     $TMPDIR/fseval_jobs.sh
 
 echo "(4) 🚀 Enqueueing jobs ..."
