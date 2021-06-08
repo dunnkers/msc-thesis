@@ -5,7 +5,7 @@
 #SBATCH --partition=short
 #SBATCH --mem=10000
 #SBATCH --chdir=/scratch/s2995697/fseval/
-#SBATCH --output=/data/s2995697/slurm/logs/slurm-%A_%a.out
+#SBATCH --output=/data/s2995697/slurm/logs/slurm-%A.out
 
 echo "Running metrics enqueueing job ✨"
 

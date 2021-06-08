@@ -6,7 +6,7 @@
 #SBATCH --job-name=logs-uploader
 #SBATCH --mem=2500
 #SBATCH --chdir=/scratch/s2995697/fseval/
-#SBATCH --output=/data/s2995697/slurm/logs/slurm-%A_%a.out
+#SBATCH --output=/data/s2995697/slurm/logs/slurm-%A.out
 
 echo "Uploading logs for job: $SACCT_JOB_ID (this job has id $SLURM_JOB_ID)"
 module load Python/3.8.6-GCCcore-10.2.0
