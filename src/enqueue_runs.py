@@ -54,7 +54,7 @@ def get_peregrine_output(cmd):
 
     stdout, stderr = Popen(cmds, stdout=PIPE).communicate()
 
-    output = stdout.decode("utf-8").replace("\n", "")
+    output = stdout.decode("utf-8").split("\n")[-1]
     return output
 
 
@@ -80,23 +80,9 @@ for run in runs:
     script_dir = f"/home/{os.environ.get('PEREGRINE_USERNAME')}/msc-thesis/jobs"
     # fetch run dir
     run_dir = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
-    # verify run dir
-    verified = get_peregrine_output(f"sh {script_dir}/_verify_run_path.sh {run_dir}")
-    # has cache
-    n_cached = get_peregrine_output(
-        f"find {run_dir} -name *.pickle -print | head -n 1 | wc -l"
-    )
 
-    if verified != "true":
+    if run_dir == "fail":
         print(TerminalColor.red(f"incorrect run dir: {run_dir}"))
-        continue
-
-    if not n_cached or not (int(n_cached) > 0):
-        print(
-            TerminalColor.purple(
-                "⚠️ " + str(n_cached) + f" pickle files in dir: {run_dir}"
-            )
-        )
         continue
 
     if writing_to_file:
