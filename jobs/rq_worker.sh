@@ -18,4 +18,4 @@ module load Python/3.8.6-GCCcore-10.2.0
 source $TMPDIR/venv_${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}/bin/activate
 
 echo "(3) 🚀 Running rq worker ..."
-rq worker -u $REDIS_URL
+rq worker -u $REDIS_URL --burst
