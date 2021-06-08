@@ -47,7 +47,7 @@ if writing_to_file:
 def get_peregrine_output(cmd):
     cmds = []
     username = os.environ.get("PEREGRINE_USERNAME")
-    if os.environ.get("LMOD_sys", "") == "Linux":
+    if os.environ.get("LMOD_sys", "") != "Linux":
         cmds = ["ssh", f"{username}@peregrine.hpc.rug.nl", cmd]
     else:
         cmds = cmd.split(" ")
