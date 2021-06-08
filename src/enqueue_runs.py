@@ -77,7 +77,7 @@ for run in runs:
     config = run.config
 
     ### grabbing the run dir
-    script_dir = "~/msc-thesis/jobs"
+    script_dir = f"/home/{os.environ.get("PEREGRINE_USERNAME")}/msc-thesis/jobs"
     # fetch run dir
     run_dir = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
     # verify run dir
@@ -86,13 +86,12 @@ for run in runs:
     n_cached = get_peregrine_output(
         f"find {run_dir} -name *.pickle -print | head -n 1 | wc -l"
     )
-    n_cached = int(n_cached)
 
     if verified != "true":
         print(TerminalColor.red(f"incorrect run dir: {run_dir}"))
         continue
 
-    if not (n_cached > 0):
+    if not n_cached or not (int(n_cached) > 0):
         print(
             TerminalColor.purple(
                 "⚠️ " + str(n_cached) + f" pickle files in dir: {run_dir}"
@@ -101,13 +100,7 @@ for run in runs:
         continue
 
     if writing_to_file:
-        print(
-            TerminalColor.green("✓")
-            + " found "
-            + TerminalColor.cyan(str(n_cached))
-            + " pickle files in dir: "
-            + TerminalColor.yellow(run_dir)
-        )
+        print(TerminalColor.green("✓") + " found " + TerminalColor.yellow(run_dir))
 
     dataset_name = config["dataset"]["name"]
     dataset = dataset_mapping[dataset_name]
