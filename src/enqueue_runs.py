@@ -79,7 +79,6 @@ for run in runs:
     ### grabbing the run dir
     script_dir = f"/home/{os.environ.get('PEREGRINE_USERNAME')}/msc-thesis/jobs"
     # fetch run dir
-    print(f"executing `sh {script_dir}/_get_run_path.sh {run.id}`")
     output = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
     result = output[-2]
 
@@ -117,7 +116,7 @@ for run in runs:
 "++callbacks.wandb.id={run.id}" \
 "++storage_provider.local_dir={run_dir}" \
 dataset={dataset} \
-"estimator@pipeline.ranker={ranker}" \
+"estimator@ranker={ranker}" \
 pipeline.n_bootstraps=25 \
 pipeline.n_jobs=1 \
 "++callbacks.wandb.log_metrics=false" \

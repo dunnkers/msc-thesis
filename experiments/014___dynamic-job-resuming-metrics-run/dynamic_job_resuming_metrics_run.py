@@ -119,7 +119,7 @@ for run in runs:
 "++callbacks.wandb.id={run.id}" \
 "++storage_provider.local_dir={run_dir}" \
 dataset={dataset} \
-"estimator@pipeline.ranker={ranker}" \
+"estimator@ranker={ranker}" \
 pipeline.n_bootstraps=25 \
 pipeline.n_jobs=1 \
 "++callbacks.wandb.log_metrics=false" \

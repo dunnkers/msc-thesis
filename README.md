@@ -15,7 +15,7 @@ fseval \
     "--multirun" \
     "pipeline.n_bootstraps=25" \
     "dataset=madelon,nomao,ozone_levels,phoneme" \
-    "estimator@pipeline.ranker=glob(*)" \
+    "estimator@ranker=glob(*)" \
     "++callbacks.wandb.project=fseval" \
     "++callbacks.wandb.group=cohort-1" \
     "hydra/launcher=rq" \
@@ -36,7 +36,7 @@ From your laptop, run:
 
 ```shell
 pg "cd msc-thesis; git pull && git log -n 1"
-pg "sbatch --array=0-1 --time=72:00:00 --job-name=rq-worker ~/msc-thesis/jobs/rq_worker.sh"
+pg "sbatch --array=0-4 --time=24:00:00 --job-name=rq-worker ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
 

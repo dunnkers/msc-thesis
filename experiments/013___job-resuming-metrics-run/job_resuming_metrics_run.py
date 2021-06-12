@@ -66,7 +66,7 @@ for run in runs:
         f"""fseval --multirun \
 "++callbacks.wandb.id={run.id}" \
 dataset={normalize(dataset)} \
-"estimator@pipeline.ranker={normalize(ranker)}" \
+"estimator@ranker={normalize(ranker)}" \
 pipeline.n_bootstraps=25 \
 "++callbacks.wandb.log_metrics=false" \
 "++callbacks.wandb.project=fseval" \
