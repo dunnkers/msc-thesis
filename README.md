@@ -16,6 +16,8 @@ fseval \
     "pipeline.n_bootstraps=25" \
     "dataset=madelon,nomao,ozone_levels,phoneme" \
     "estimator@ranker=glob(*)" \
+    "validator.classifier.random_state=0" \
+    "validator.regressor.random_state=0" \
     "++callbacks.wandb.project=fseval" \
     "++callbacks.wandb.group=cohort-1" \
     "hydra/launcher=rq" \

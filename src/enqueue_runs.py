@@ -113,15 +113,17 @@ for run in runs:
         sys.stdout = f
     print(
         f"""fseval --multirun \
-"++callbacks.wandb.id={run.id}" \
-"++storage_provider.local_dir={run_dir}" \
+"+backend=wandb" \
+"++storage_provider.run_id={run.id}"
+"++storage_provider.load_dir={run_dir}" \
 dataset={dataset} \
+"estimator@validator=knn" \
 "estimator@ranker={ranker}" \
 pipeline.n_bootstraps=25 \
 pipeline.n_jobs=1 \
-"++callbacks.wandb.log_metrics=false" \
+"++callbacks.wandb.log_metrics=true" \
 "++callbacks.wandb.project=fseval" \
-"++callbacks.wandb.group=cohort-1" \
+"++callbacks.wandb.group=knn-cohort" \
 "hydra/launcher=rq" \
 "hydra.launcher.enqueue.result_ttl=1d" \
 "hydra.launcher.enqueue.failure_ttl=60d" \
