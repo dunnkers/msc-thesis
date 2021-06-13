@@ -121,7 +121,7 @@ for run in runs:
     print(
         f"""fseval --multirun \
 "+backend=wandb" \
-"++storage_provider.run_id={run.id}"
+"++storage_provider.run_id={run.id}" \
 "++storage_provider.load_dir={run_dir}" \
 dataset={dataset} \
 "estimator@validator=knn" \
