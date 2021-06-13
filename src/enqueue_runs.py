@@ -70,7 +70,7 @@ for i, run in enumerate(runs):
     )
     if writing_to_file:
         print(
-            f"{i}/{len(runs)} "
+            f"{i + 1}/{len(runs)} "
             + process_text
             + " run "
             + TerminalColor.yellow(run.id)
@@ -142,8 +142,8 @@ for i, run in enumerate(runs):
 "estimator@validator=knn" \
 "estimator@ranker={ranker}" \
 "validator.load_cache=never" \
-"pipeline.n_bootstraps=25" \
-"pipeline.n_jobs=1" \
+"n_bootstraps=25" \
+"n_jobs=1" \
 "++callbacks.wandb.log_metrics=true" \
 "++callbacks.wandb.project=fseval" \
 "++callbacks.wandb.group=knn-cohort" \
