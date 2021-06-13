@@ -69,46 +69,60 @@ for i, run in enumerate(runs):
         else TerminalColor.purple("skipping")
     )
     if writing_to_file:
-        print(f"{i}/{len(runs)}" + process_text + " run " + TerminalColor.yellow(run.id) + f" ({run.state})")
+        print(
+            f"{i}/{len(runs)} "
+            + process_text
+            + " run "
+            + TerminalColor.yellow(run.id)
+            + f" ({run.state})"
+        )
 
     if not should_process:
         continue
 
     config = run.config
 
-    ### grabbing the run dir
-    script_dir = f"/home/{os.environ.get('PEREGRINE_USERNAME')}/msc-thesis/jobs"
-    # fetch run dir
-    output = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
-    result = output[-2]
+    run_dir = config.get("storage_provider/save_dir")
+    if not run_dir:
 
-    if result == "fail" or result == "":
-        print(TerminalColor.red(f"incorrect result: {result}"))
-        continue
+        ### grabbing the run dir
+        script_dir = f"/home/{os.environ.get('PEREGRINE_USERNAME')}/msc-thesis/jobs"
+        # fetch run dir
+        output = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
+        result = output[-2]
 
-    # get config, and assure they all exist
-    try:
-        p = config.get("dataset/p") or config["dataset"]["p"]
-        p = int(p)
-        n_bootstraps = int(config["n_bootstraps"])
-        dataset_name = config.get("dataset/name") or config["dataset"]["name"]
-        ranker_name = config.get("ranker/name") or config["ranker"]["name"]
-    except Exception:
-        print(TerminalColor.red(f"corrupt config: " + f"{run.id}"))
-        continue
+        if result == "fail" or result == "":
+            print(TerminalColor.red(f"incorrect result: {result}"))
+            continue
 
-    run_dir = result
-    n_pickles = int(output[-3])
-    n_validations = min(50, p)
-    n_pickles_should_be = n_bootstraps * n_validations + n_bootstraps
-    if n_pickles != n_pickles_should_be:
-        print(
-            TerminalColor.red(
-                f"incorrect n_pickles: "
-                + f"expected {n_pickles_should_be}, was {n_pickles}"
+        # get config, and assure they all exist
+        try:
+            p = config.get("dataset/p") or config["dataset"]["p"]
+            p = int(p)
+            n_bootstraps = int(config["n_bootstraps"])
+            dataset_name = config.get("dataset/name") or config["dataset"]["name"]
+            ranker_name = config.get("ranker/name") or config["ranker"]["name"]
+        except Exception:
+            print(TerminalColor.red(f"corrupt config: " + f"{run.id}"))
+            continue
+
+        run_dir = result
+        n_pickles = int(output[-3])
+        n_validations = min(50, p)
+        n_pickles_should_be = n_bootstraps * n_validations + n_bootstraps
+        if not (
+            n_pickles == n_pickles_should_be
+            or n_pickles == n_pickles_should_be + n_bootstraps
+        ):
+            print(
+                TerminalColor.red(
+                    f"incorrect n_pickles: "
+                    + f"expected {n_pickles_should_be}, was {n_pickles}"
+                )
             )
-        )
-        continue
+            continue
+    else:
+        ...
 
     if writing_to_file:
         print(TerminalColor.green("✓") + " found " + TerminalColor.yellow(run_dir))
