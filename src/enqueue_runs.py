@@ -86,10 +86,19 @@ for run in runs:
         print(TerminalColor.red(f"incorrect result: {result}"))
         continue
 
+    # get config, and assure they all exist
+    try:
+        p = config.get("dataset/p") or config["dataset"]["p"]
+        p = int(p)
+        n_bootstraps = int(config["n_bootstraps"])
+        dataset_name = config.get("dataset/name") or config["dataset"]["name"]
+        ranker_name = config.get("ranker/name") or config["ranker"]["name"]
+    except Exception:
+        print(TerminalColor.red(f"corrupt config: " + f"{run.id}"))
+        continue
+
     run_dir = result
     n_pickles = int(output[-3])
-    p = int(getattr(config, "dataset/p", None) or config["dataset"]["p"])
-    n_bootstraps = int(config["n_bootstraps"])
     n_validations = min(50, p)
     n_pickles_should_be = n_bootstraps * n_validations + n_bootstraps
     if n_pickles != n_pickles_should_be:
@@ -104,9 +113,7 @@ for run in runs:
     if writing_to_file:
         print(TerminalColor.green("✓") + " found " + TerminalColor.yellow(run_dir))
 
-    dataset_name = getattr(config, "dataset/name", None) or config["dataset"]["name"]
     dataset = dataset_mapping[dataset_name]
-    ranker_name = getattr(config, "ranker/name", None) or config["ranker"]["name"]
     ranker = estimator_mapping[ranker_name]
 
     if writing_to_file:
