@@ -13,7 +13,7 @@ from fseval.utils.hydra_utils import get_group_configs, get_group_options
 
 print("hydra utils imported " + TerminalColor.green("✓"))
 
-GROUP = "cohort-1"
+GROUP = "knn-cohort"
 
 # construct dataset mapping
 print("Constructing dataset mapping...")
@@ -61,7 +61,7 @@ def get_peregrine_output(cmd):
 #%%
 print("processing runs...")
 df = pd.DataFrame()
-for run in runs:
+for i, run in enumerate(runs):
     should_process = run.state == "finished"
     process_text = (
         TerminalColor.blue("processing")
@@ -69,7 +69,7 @@ for run in runs:
         else TerminalColor.purple("skipping")
     )
     if writing_to_file:
-        print(process_text + " run " + TerminalColor.yellow(run.id) + f" ({run.state})")
+        print(f"{i}/{len(runs)}" + process_text + " run " + TerminalColor.yellow(run.id) + f" ({run.state})")
 
     if not should_process:
         continue
@@ -118,16 +118,18 @@ for run in runs:
 
     if writing_to_file:
         sys.stdout = f
+    # "++storage_provider.run_id={run.id}" \
     print(
         f"""fseval --multirun \
 "+backend=wandb" \
-"++storage_provider.run_id={run.id}" \
+"++callbacks.wandb.id={run.id}" \
 "++storage_provider.load_dir={run_dir}" \
-dataset={dataset} \
+"dataset={dataset}" \
 "estimator@validator=knn" \
 "estimator@ranker={ranker}" \
-pipeline.n_bootstraps=25 \
-pipeline.n_jobs=1 \
+"validator.load_cache=never" \
+"pipeline.n_bootstraps=25" \
+"pipeline.n_jobs=1" \
 "++callbacks.wandb.log_metrics=true" \
 "++callbacks.wandb.project=fseval" \
 "++callbacks.wandb.group=knn-cohort" \
