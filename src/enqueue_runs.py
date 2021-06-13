@@ -88,7 +88,7 @@ for run in runs:
 
     run_dir = result
     n_pickles = int(output[-3])
-    p = int(config["dataset"]["p"])
+    p = int(getattr(config, "dataset/p", None) or config["dataset"]["p"])
     n_bootstraps = int(config["n_bootstraps"])
     n_validations = min(50, p)
     n_pickles_should_be = n_bootstraps * n_validations + n_bootstraps
@@ -104,9 +104,9 @@ for run in runs:
     if writing_to_file:
         print(TerminalColor.green("✓") + " found " + TerminalColor.yellow(run_dir))
 
-    dataset_name = config["dataset"]["name"]
+    dataset_name = getattr(config, "dataset/name", None) or config["dataset"]["name"]
     dataset = dataset_mapping[dataset_name]
-    ranker_name = config["ranker"]["name"]
+    ranker_name = getattr(config, "ranker/name", None) or config["ranker"]["name"]
     ranker = estimator_mapping[ranker_name]
 
     if writing_to_file:
