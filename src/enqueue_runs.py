@@ -82,6 +82,17 @@ for i, run in enumerate(runs):
 
     config = run.config
 
+    # get config, and assure they all exist
+    try:
+        p = config.get("dataset/p") or config["dataset"]["p"]
+        p = int(p)
+        n_bootstraps = int(config["n_bootstraps"])
+        dataset_name = config.get("dataset/name") or config["dataset"]["name"]
+        ranker_name = config.get("ranker/name") or config["ranker"]["name"]
+    except Exception:
+        print(TerminalColor.red(f"corrupt config: " + f"{run.id}"))
+        continue
+
     run_dir = config.get("storage_provider/save_dir")
     if not run_dir:
 
@@ -93,17 +104,6 @@ for i, run in enumerate(runs):
 
         if result == "fail" or result == "":
             print(TerminalColor.red(f"incorrect result: {result}"))
-            continue
-
-        # get config, and assure they all exist
-        try:
-            p = config.get("dataset/p") or config["dataset"]["p"]
-            p = int(p)
-            n_bootstraps = int(config["n_bootstraps"])
-            dataset_name = config.get("dataset/name") or config["dataset"]["name"]
-            ranker_name = config.get("ranker/name") or config["ranker"]["name"]
-        except Exception:
-            print(TerminalColor.red(f"corrupt config: " + f"{run.id}"))
             continue
 
         run_dir = result
