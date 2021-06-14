@@ -8,10 +8,9 @@ from tqdm import tqdm
 for i in range(100):
     try:
 
-        GROUP = "cohort-1"
         # retrieve runs from API
         api = wandb.Api()
-        runs = api.runs("dunnkers/fseval", filters={"$or": [{"group": GROUP}]})
+        runs = api.runs("dunnkers/fseval")
         print(f"Found {TerminalColor.yellow(str(len(runs)))} runs.")
 
         def is_ranker(run, ranker):
