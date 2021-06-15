@@ -133,10 +133,11 @@ for i, run in enumerate(runs):
     if writing_to_file:
         sys.stdout = f
     # "++callbacks.wandb.id={run.id}" \
+    # "++storage_provider.run_id={run.id}" \
     print(
         f"""fseval --multirun \
 "+backend=wandb" \
-"++storage_provider.run_id={run.id}" \
+"storage_provider=local" \
 "++storage_provider.load_dir={run_dir}" \
 "dataset={dataset}" \
 "estimator@validator=knn" \
@@ -146,7 +147,7 @@ for i, run in enumerate(runs):
 "n_jobs=1" \
 "++callbacks.wandb.log_metrics=true" \
 "++callbacks.wandb.project=fseval" \
-"++callbacks.wandb.group=knn-cohort-2" \
+"++callbacks.wandb.group=knn-cohort-3" \
 "hydra/launcher=rq" \
 "hydra.launcher.enqueue.result_ttl=1d" \
 "hydra.launcher.enqueue.failure_ttl=60d" \
