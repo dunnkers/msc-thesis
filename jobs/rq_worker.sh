@@ -1,8 +1,9 @@
 #!/bin/bash
-#SBATCH --time=20:00:00
+#SBATCH --time=24:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --partition=regular
+#SBATCH --job-name=rq-worker
 #SBATCH --mem=10000
 #SBATCH --chdir=/scratch/s2995697/fseval/
 #SBATCH --output=/data/s2995697/slurm/logs/slurm-%A_%a.out
