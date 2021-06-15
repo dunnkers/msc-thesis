@@ -155,7 +155,4 @@ for i, run in enumerate(runs):
     )
     sys.stdout = original_stdout
 
-    if i > 3:
-        break
-
 print("✨ all done " + TerminalColor.green("✓"))
