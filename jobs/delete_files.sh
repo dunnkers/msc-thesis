@@ -3,6 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --partition=regular
+#SBATCH --job-name=delete-wandb-files
 #SBATCH --mem=10000
 #SBATCH --chdir=/scratch/s2995697/fseval/
 #SBATCH --output=/data/s2995697/slurm/logs/slurm-%A.out
