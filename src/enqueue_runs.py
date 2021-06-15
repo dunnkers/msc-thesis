@@ -146,7 +146,7 @@ for i, run in enumerate(runs):
 "n_jobs=1" \
 "++callbacks.wandb.log_metrics=true" \
 "++callbacks.wandb.project=fseval" \
-"++callbacks.wandb.group=knn-cohort" \
+"++callbacks.wandb.group=knn-cohort-2" \
 "hydra/launcher=rq" \
 "hydra.launcher.enqueue.result_ttl=1d" \
 "hydra.launcher.enqueue.failure_ttl=60d" \
