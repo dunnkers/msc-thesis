@@ -13,7 +13,7 @@ from fseval.utils.hydra_utils import get_group_configs, get_group_options
 
 print("hydra utils imported " + TerminalColor.green("✓"))
 
-GROUP = "knn-cohort"
+GROUP = "cohort-1"
 
 # construct dataset mapping
 print("Constructing dataset mapping...")
@@ -132,11 +132,11 @@ for i, run in enumerate(runs):
 
     if writing_to_file:
         sys.stdout = f
-    # "++storage_provider.run_id={run.id}" \
+    # "++callbacks.wandb.id={run.id}" \
     print(
         f"""fseval --multirun \
 "+backend=wandb" \
-"++callbacks.wandb.id={run.id}" \
+"++storage_provider.run_id={run.id}" \
 "++storage_provider.load_dir={run_dir}" \
 "dataset={dataset}" \
 "estimator@validator=knn" \
@@ -154,5 +154,8 @@ for i, run in enumerate(runs):
 "hydra.launcher.fail_hard=true" """
     )
     sys.stdout = original_stdout
+
+    if i > 3:
+        break
 
 print("✨ all done " + TerminalColor.green("✓"))

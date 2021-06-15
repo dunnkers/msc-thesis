@@ -18,8 +18,8 @@ module load Python/3.8.6-GCCcore-10.2.0
 source $TMPDIR/venv_${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}/bin/activate
 
 echo "(3) 📊 Fetching runs and storing enqueueing script ..."
+rm -rf $TMPDIR/fseval_jobs.sh
 python ~/msc-thesis/src/enqueue_runs.py $TMPDIR/fseval_jobs.sh
 
 echo "(4) 🚀 Enqueueing jobs ..."
-rm -rf $TMPDIR/fseval_jobs.sh
 sh $TMPDIR/fseval_jobs.sh
