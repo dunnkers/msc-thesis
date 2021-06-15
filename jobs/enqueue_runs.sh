@@ -25,3 +25,5 @@ python ~/msc-thesis/src/enqueue_runs.py $TMPDIR/fseval_jobs.sh
 
 echo "(4) 🚀 Enqueueing jobs ..."
 sh $TMPDIR/fseval_jobs.sh
+
+exit 0

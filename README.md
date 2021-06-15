@@ -41,6 +41,13 @@ pg "cd msc-thesis; git pull && git log -n 1"
 pg "sbatch --array=0-4 ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
+## Enqueue runs
+```shell
+pg "cd msc-thesis; git pull && git log -n 1"
+pg "sbatch ~/msc-thesis/jobs/enqueue_runs.sh"
+pg "sbatch --array=0-4 --dependency=afterok:<job_id> ~/msc-thesis/jobs/rq_worker.sh"
+```
+
 
 ## Running the RQ dashboard
 ```shell
