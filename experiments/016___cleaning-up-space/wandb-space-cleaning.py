@@ -10,7 +10,7 @@ for i in range(100):
 
         # retrieve runs from API
         api = wandb.Api()
-        runs = api.runs("dunnkers/fseval")
+        runs = api.runs("dunnkers/fseval-archive")
         print(f"Found {TerminalColor.yellow(str(len(runs)))} runs.")
 
         def is_ranker(run, ranker):
