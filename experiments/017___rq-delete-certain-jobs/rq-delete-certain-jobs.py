@@ -13,7 +13,6 @@ redis = Redis(
     password=os.environ.get("REDIS_PASSWORD"),
     ssl=True,
 )
-queue = Queue(connection=redis)
 
 
 def get_job(registry, job_or_id):
@@ -25,17 +24,20 @@ def get_job(registry, job_or_id):
     return job
 
 
-job_ids = queue.get_job_ids()
+queue = Queue(name="learning-curve", connection=redis)
+job_ids = queue.failed_job_registry.get_job_ids()
 for job_id in job_ids:
     job = get_job(queue, job_id)
-
     job.delete()
-    print(f"✓ dequeue'd job: {job.description} ({job_id})")
+    print(f"{job_id}")
 
-    with queue.connection.pipeline() as pipeline:
-        job.started_at = None
-        job.ended_at = None
-        job.retry = Retry(max=3, interval=60)
-        job.save()
-        job = queue.enqueue_job(job, pipeline=pipeline)
-        pipeline.execute()
+    # job.delete()
+    # print(f"✓ dequeue'd job: {job.description} ({job_id})")
+
+    # with queue.connection.pipeline() as pipeline:
+    #     job.started_at = None
+    #     job.ended_at = None
+    #     job.retry = Retry(max=3, interval=60)
+    #     job.save()
+    #     job = queue.enqueue_job(job, pipeline=pipeline)
+    #     pipeline.execute()

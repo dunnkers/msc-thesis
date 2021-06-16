@@ -13,14 +13,19 @@ source $TMPDIR/venv_${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}/bin/activate
 
 fseval \
     "--multirun" \
-    "pipeline.n_bootstraps=25" \
-    "dataset=madelon,nomao,ozone_levels,phoneme" \
+    "dataset=synclf_hard" \
     "estimator@ranker=glob(*)" \
-    "validator.classifier.random_state=0" \
-    "validator.regressor.random_state=0" \
-    "++callbacks.wandb.project=fseval" \
-    "++callbacks.wandb.group=cohort-1" \
+    "estimator@validator=decision_tree" \
+    "resample.sample_size=range(100, 2100, 200)" \
+    "n_bootstraps=10" \
+    "n_jobs=10" \
+    "storage_provider=local" \
+    "callbacks=[wandb]" \
+    "++callbacks.wandb.project=fseval-learning-curve" \
+    "++callbacks.wandb.log_metrics=true" \
+    "++callbacks.wandb.group=lc-1" \
     "hydra/launcher=rq" \
+    "hydra.launcher.queue=learning-curve" \
     "hydra.launcher.enqueue.result_ttl=1d" \
     "hydra.launcher.enqueue.failure_ttl=60d" \
     "hydra.launcher.stop_after_enqueue=true" \
