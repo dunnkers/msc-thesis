@@ -1,0 +1,104 @@
+\providecommand{\main}{./report}
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+
+\renewcommand\theadalign{bl}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{| l | l | l | l | l | l | l |}
+    \hline
+    \thead{Name method} & \thead{Classif-\\ication} & \thead{Regr-\\ ession} & \thead{Multi-\\output} & \thead{Feature \\ importance} & \thead{Feature\\support} & \thead{Feature\\ranking} \\
+    \hline
+    ANOVA F-value (sklearn) & \checkmark & \checkmark &  & \checkmark &  &  \\ 
+    \hline
+    Boruta \citep{kursa_feature_2010} & \checkmark &  &  &  & \checkmark & \checkmark \\ 
+    \hline
+    Chi-Squared (sklearn) & \checkmark &  &  & \checkmark &  &  \\ 
+    \hline
+    Decision Tree (sklearn) & \checkmark & \checkmark & \checkmark & \checkmark &  &  \\ 
+    \hline
+    FeatBoost \footnote{\href{https://github.com/amjams/FeatBoost}{https://github.com/amjams/FeatBoost}} & \checkmark &  &  & \checkmark & \checkmark &  \\ 
+    \hline
+    Infinite Selection \citep{roffo_infinite_2015} & \checkmark &  &  & \checkmark &  & \checkmark \\ 
+    \hline
+    \hline
+    MultiSURF \citep{urbanowicz_benchmarking_2018} & \checkmark & \checkmark &  & \checkmark &  &  \\ 
+    \hline
+    Mutual Info \citep{zaffalon_robust_2014} & \checkmark & \checkmark &  & \checkmark &  &  \\ 
+    \hline
+    ReliefF \citep{urbanowicz_benchmarking_2018} & \checkmark & \checkmark &  & \checkmark &  &  \\ 
+    \hline
+    Stability Selection \citep{meinshausen_stability_2009} & \checkmark &  &  & \checkmark & \checkmark &  \\ 
+    \hline
+    TabNet \citep{arik_tabnet_2020} & \checkmark & \checkmark & \checkmark & \checkmark &  &  \\ 
+    \hline
+    XGBoost \citep{chen_xgboost_2016} & \checkmark & \checkmark &  & \checkmark &  &  \\ 
+    \hline     
+    \end{tabular}
+    \caption{Feature Ranker line-up. Both classifiers and regressors are considered, as well as multioutput estimators.}
+    \label{table:experiments-ranker-specification}
+\end{table}
+
+
+
+\renewcommand\theadalign{bl}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{| l | l | l | l | l | l | l |}
+    \hline
+    \thead{Name dataset} & \thead{$n$} & \thead{$p$} & \thead{Multi-\\output} & \thead{Domain} & \thead{Group} \\
+    \hline
+    Boston house prices & 506 & 11 & No & Finance & - \\ 
+    \hline
+    Additive & 10000 & 10 & Yes & Synthetic & Chen et al. \citep{chen_learning_2018} \\ 
+    \hline
+    Orange & 10000 & 10 & Yes & Synthetic & Chen et al. \citep{chen_learning_2018} \\ 
+    \hline
+    XOR & 10000 & 10 & Yes & Synthetic & Chen et al. \citep{chen_learning_2018} \\ 
+    \hline
+    Climate Model Simulation & 540 & 18 & No & Nature & OpenML-CC18 \citep{bischl_openml_2019} \\ 
+    \hline
+    Cylinder bands & 5456 & 24 & No & Mechanics & OpenML-CC18 \citep{bischl_openml_2019} \\ 
+    \hline
+    Iris Flowers & 150 & 4 & No & Nature & - \\ 
+    \hline
+    Madelon & 2600 & 500 & No & Synthetic & Guyon \citep{guyon_design_2003} \\ 
+    \hline
+    Multifeat Pixel & 2000 & 240 & No & OCR & OpenML-CC18 \citep{bischl_openml_2019} \\ 
+    \hline
+    Nomao & 34465 & 89 & No & Geodata & OpenML-CC18 \citep{bischl_openml_2019}\\ 
+    \hline
+    Ozone Levels & 2534 & 72 & No & Nature & OpenML-CC18 \citep{bischl_openml_2019} \\ 
+    \hline
+    Phoneme & 5404 & 5 & No & Biomedical & OpenML-CC18 \citep{bischl_openml_2019} \\ 
+    \hline
+    Synclf easy & 10000 & 20 & No & Synthetic & Synclf \\ 
+    \hline
+    Synclf hard & 10000 & 50 & No & Synthetic & Synclf \\ 
+    \hline
+    Synclf medium & 10000 & 30 & No & Synthetic & Synclf \\ 
+    \hline
+    Synclf very hard & 10000 & 50 & No & Synthetic & Synclf \\ 
+    \hline
+    Synreg easy & 10000 & 10 & No & Synthetic & Synreg \\ 
+    \hline
+    Synreg hard & 10000 & 20 & No & Synthetic & Synreg \\ 
+    \hline
+    Synreg medium & 10000 & 10 & No & Synthetic & Synreg \\ 
+    \hline
+    Synreg hard & 10000 & 20 & No & Synthetic & Synreg \\ 
+    \hline
+    Texture & 5500 & 40 & No & Pattern Recognition & OpenML-CC18 \citep{bischl_openml_2019} \\ 
+    \hline
+    Wall Robot Navigation & 5456 & 24 & No & Mechanics & OpenML-CC18 \citep{bischl_openml_2019} \\ 
+    \hline
+    \end{tabular}
+    \caption{All datasets considered in the experiment. Both real-world and synthetic datasets are considered. Whereas synthetic datasets are generated in the pipeline itself, real-world datasets are fetched from OpenML.}
+    \label{table:experiments-dataset-specification}
+\end{table}
+
+
+
+\biblio
+\end{document}

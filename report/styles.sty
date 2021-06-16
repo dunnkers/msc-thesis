@@ -2,7 +2,7 @@
 %%-----------------------PAGE SETTINGS----------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[utf8]{inputenc}
-\usepackage[margin=0.01cm]{geometry}
+\usepackage{geometry}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%--------------------------PREAMBLE------------------------------%%
@@ -23,6 +23,9 @@
 \usepackage{xfrac}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \definecolor{lightblue}{rgb}{0.23, 0.45, 0.57}
 \usepackage[colorlinks=true,linkcolor=blue,allcolors=lightblue]{hyperref}
@@ -30,7 +33,10 @@
 \usepackage[toc,shortcuts]{glossaries}
 \renewcommand*{\glstextformat}[1]{\textcolor{black}{#1}}
 
-
+% subfiles
+\usepackage{subfiles}
+\providecommand{\main}{.}
+\def\biblio{\bibliographystyle{abbrv}\bibliography{\main/references}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%-----------------------CUSTOM COMMANDS--------------------------%%
