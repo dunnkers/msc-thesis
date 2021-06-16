@@ -1,0 +1,89 @@
+\providecommand{\main}{./report}
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+
+\section{Related work}\label{section:related-work}
+% many papers in FS and Interpretable AI - but not so much on **evaluation**
+The domain of feature- ranking and selection has a large availability of literature, spread out over many subtopics. What is more rare, however, is to find papers that explicitly research and reason about the usage of certain evaluation metrics. In general, papers tend to stick to a certain evaluation method when the majority employs the given technique - but a chance for conducting a more thorough analysis might be missed nonetheless.
+
+In the feature selection domain, the evaluation and comparison of feature selection algorithms is a non-trivial problem. Among a wide range of metrics, no consensus exists among researchers, leaving many papers to present outcomes in different ways \citep{guyon_introduction_2003}. In absence of a single consistent evaluation pipeline across the field, many scholars adhere to methods that are `widely used' \citep{solorio-fernandez_review_2020} \citep{li_feature_2017}.
+
+Recommendations for metrics have been given in previous papers, most often when discussing future work. Arguments are made for relevant aspects to evaluate, such as in Chandrashekar (2014) \citep{chandrashekar_survey_2014}:
+
+\begin{quote}\textit{"a feature selection algorithm can be selected based on the following considerations: simplicity, stability, number of reduced features, classification accuracy, storage and computational requirements"}\end{quote}
+
+Of these aspects most proposals focus mainly on number of reduced features, classification accuracy and computational requirements. In the regression case, the classification accuracy would be replaced by a commonly used regression counterpart, the R2-score. Let us explore what validation estimators and corresponding metrics are used in papers across the field. Afterwards, evaluation aspects are covered that are not present in the aforementioned set.
+
+
+
+
+
+\subsection{Evaluation metrics}
+A \textbf{validation estimator} is often used to evaluate supervised feature selection methods; assessing the quality of a feature subset by running some predictor over the feature subset selected by the feature selection algorithm, obtaining the easily interpretable \textbf{prediction accuracy} metric in the classification case. Predictors often used in the literature include \gls{knn} \citep{al-tashi_review_2020} \citep{mafarja_dragonfly_2020}, \glspl{svm} \citep{chandrashekar_survey_2014}, \glspl{dt} \citep{li_feature_2017} and \gls{nb} \citep{koller_toward_1996}. Metrics used are often classification accuracy or in some cases average error rate \citep{khurma_evolopy-fs_2020}, validated using some $n$-fold cross validation, commonly 5- or 10-fold. See Table~\ref{table:evaluation-metrics-table}.
+
+\renewcommand\theadalign{bl}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{| l | l | l | l | l | l | l |}
+    \hline
+    \thead{Name method} & \thead{Validation \\ estimators} & \thead{Acc-\\uracy} & \thead{Stab-\\ility} & \thead{Time\\ $t(s)$} & \thead{Time\\ $\Omega(n)$} & \thead{Apriori\\info} \\
+    \hline
+    FOCUS \citep{almuallim_learning_1991}                       & \gls{dt}                              & \checkmark              &                &                & \checkmark               &                   \\
+    \hline
+    Relief \citep{kira_feature_1992}                      & \gls{dt}                              & \checkmark              &                & \checkmark               & \checkmark               &                   \\
+    \hline
+    Relief-F \citep{kononenko_estimating_1994}                    & \makecell[tl]{\acs{pcc}} &               &                &                &                & \checkmark                  \\
+    \hline
+    INTERACT \citep{zhao_searching_2007}                    & \gls{dt}, \gls{svm}                         & \checkmark              &                & \checkmark               & \checkmark               &                   \\
+    \hline
+    Fisher \citep{gu_generalized_2012}                      & \gls{knn}                            & \checkmark              &                &                & \checkmark               &                   \\
+    \hline
+    MutInf \citep{zaffalon_robust_2014}                      & \gls{nb}                              & \checkmark              & \checkmark               & \checkmark               & \checkmark               &                   \\
+    \hline
+    \makecell[tl]{Joint MutInf Maximization \citep{bennasar_feature_2015}}   & \gls{nb}, \gls{knn}                        & \checkmark              & \checkmark               &                &                &                   \\
+    \hline
+    \makecell[tl]{Interaction Weight-based FS \citep{zeng_novel_2015}} & \makecell[tl]{\gls{dt}, \gls{ib1}, \gls{part}}                   & \checkmark              &                & \checkmark               & \checkmark               & \checkmark                  \\
+    \hline
+    \makecell[tl]{Infinite FS \citep{roffo_infinite_2015}}  & \gls{svm}                             & \checkmark              & \checkmark               & \checkmark               & \checkmark               &                   \\
+    \hline
+    MultiSURF \citep{urbanowicz_relief-based_2018}                   &           -                      &               &                &                & \checkmark               & \checkmark    \\
+    \hline     
+    \end{tabular}
+    \caption{A comparison table of evaluation metrics used in Feature- Ranking or Selection paper proposals. Many different evaluation metrics are used, illustrating there exist no consensus on definite meaningful evaluation metrics in the field.}
+    \label{table:evaluation-metrics-table}
+\end{table}
+
+
+
+\textbf{Stability}, on the other hand, is not widely used in theoretical or quantitative argumentation. Even though stability was recommended as a relevant evaluation metric by Chandrashekar (2014), not many papers explicitly argue for the stability of their method; the metric is called an \textit{"overlooked problem"} in Chandrashekar (2014). In many papers this metric is still regarded as a future work for solidifying any experimental results - the development of algorithms that achieve both high classification accuracy and high stability is still seen as a `challenging' problem by Tang et al (2015) \citep{tang_feature_2014}.
+
+The trend seems to be turning though, with more authors becoming aware of the importance of stability. Our reliance on machine learning is ever-increasing, and so does the demand for interpretability and reliability of the algorithms. Take for example a biomedical application, in which feature selection is used to select genes in a gene sequencing analysis. Any expert in this domain field will feel more confident if an algorithm produces stable results given a varying sample population. This is how we define stability: given small changes in the sample data, the output of a feature selection process ought to be stable, i.e., the sensitivity of the selector to data perturbations. This metric for measuring an ability to generalize to achieving consistency has been long taken into account into prediction tasks, but not in feature selection - see for example Table~\ref{table:evaluation-metrics-table}.
+
+
+
+\textbf{Scalability} is another point of attention that only recently caught more attention. The extra demand of algorithms to allow for parallel execution has been imminent as data grew tremendously large. Even, multi-core processing can lack in terms of performance, hence introducing the need for algorithms that can run in distributed fashion. Distributing a dataset over multiple machines poses challenges to some existing methods, though. Some current methods require the full dimensionality of the dataset to be available in-memory \citep{tang_feature_2014}. Yet, other methods require each sample to be visited multiple times, e.g., to apply a sample re-weighting strategy in order to converge. For these reasons, distributing any dataset workload on to multiple workers is a non-trivial problem; no generalized solution exists for cutting the dataset into chunks.
+
+It is up to individual algorithms to find suitable ways of supporting parallel solutions and more importantly, support cases where data is too large to fit in-memory, i.e., apply distributed computing. Recent strategies overcome the issue of working with fewer samples by retaining only those samples that are most representative of the data - eliminating the need for working with a full sample population. Although few in number, there exist proposals for distributed dimensionality reduction methods \citep{li_distributed_2020}, using \textit{divide-and-conquer} techniques. Aggregating disjoint results would make for a performance similar to that of a centralized solution.
+
+
+
+
+\subsection{Synthetic datasets and apriori information}
+\textbf{Synthetic datasets} are employed in many papers in the literature. Whereas some datasets are injected by synthetically generated probe variables, others use completed generated benchmark datasets, such that benchmarks can be conducted in an even more controlled environment.
+%... already pitched slightly by Guyon, e.g. "fake" variables.. + Solorio & Urbanowicz
+About such partially synthetic datasets has been spoken of in literature since long, using datasets that are real but altered by injecting more data. In \citep{guyon_introduction_2003} the authors speak of \lq probe variables', which are used to discard any variable that scores lower than any of the probes. If the probe variables are set to be random variables, a simple way is obtained to apply a threshold to cut off features from the selected feature subset, i.e., by introducing known noise into the dataset we can construct more thoughtful cut-off thresholds.
+
+Completely synthetic datasets, on the other hand, can allow for more sophisticated metrics to be used. Possibilities for new evaluation metrics are, for example described in \citep{solorio-fernandez_review_2020}: \textit{"Evaluation in terms of the redundancy of the selected features”} and \textit{“Evaluation in terms of the correctness of the selected features”}, the latter of which requires us to know what features are informative \textit{a priori} - which is accomplished with synthetic generation. Controlling all facets relevant to the quantitative analysis manually makes for a \textit{Simulation study}, which is argued for in \citep{urbanowicz_benchmarking_2018} as follows:
+
+%... then move to Urbanowicz with examples from JMLR papers
+\begin{quote}
+    \textit{"Simulation studies such as these facilitate proper evaluation and comparison of methodologies because a simulation study can be designed by systematically varying key experimental conditions, and the ground truth of the dataset is known i.e. we know which features are relevant vs. irrelevant, we know the pattern of association between relevant features and endpoint, and we know how much signal is in the dataset."}
+\end{quote}
+
+Indeed, there seems to be a trend toward including synthetically generated datasets in experiments. In a review paper \citep{bolon-canedo_review_2013} the authors argue that synthetically generated datasets can yield statistically sound results because of the fact no inherent noise or redundancy will obstruct the experiment process. In other papers simulation studies are conducted as well \citep{cai_online_2020} \citep{tang_high-dimensional_2020} \citep{li_distributed_2020}, concluded by a small section depicting a `real data' analysis to conclude the point. For these reasons, a recommendation is made to include simulation studies in any comprehensive benchmark on feature ranking methods.
+
+
+
+\biblio
+\end{document}
