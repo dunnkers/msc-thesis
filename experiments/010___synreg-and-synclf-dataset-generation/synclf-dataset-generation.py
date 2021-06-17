@@ -76,28 +76,10 @@ config = dict(
     n_clusters_per_class=2,
     class_sep=1.0,
     random_state=0,
+    shuffle=False,
 )
 synclf_dataset_generator(
     config,
     name=f"Synclf easy",
     filename=f"synclf_easy.yaml",
-)
-
-#%%
-n_samples = 1000
-config = dict(
-    n_samples=n_samples,
-    n_features=20,
-    n_informative=10,
-    n_targets=1,
-    bias=200,
-    effective_rank=4,
-    noise=0.3,
-    coef=True,
-    random_state=0,
-)
-synreg_dataset_generator(
-    config,
-    name=f"Synreg hard",
-    filename=f"synreg_hard.yaml",
 )
