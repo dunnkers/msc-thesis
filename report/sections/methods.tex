@@ -1,0 +1,239 @@
+\providecommand{\main}{./report}
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+
+\section{Methods for Feature Ranking}\label{section:methods}
+In the following, general theory related to the construction of feature rankings is discussed. The theory is required to be discussed because in order to best understand the evaluation process, an understanding of the construction process is a must.
+
+
+
+\subsection{Terminology}
+Among the subject of reducing dataset dimensions, there exists a common terminology that is used among the literature. Whilst some terminology is synonymous, other seemingly related terms mean different concepts entirely.
+
+% feature selection versus feature ranking
+\textbf{Feature Selection} and Feature Ranking are two terms often used interchangeably. Since often feature selection is done by first constructing a feature ranking and then cutting off features ranked lower than some threshold $\epsilon$, the construction of a feature ranking is often times an integral part of feature selection. Although feature selection methods exist that do not construct feature rankings, the two are synchronous in many ways, and are in this paper thus related to one another.
+
+The term Feature Selection is used to indicate the general process of obtaining a feature subset with reduced size without transforming the data. Note that any feature selection method might transform the data in the algorithm however it likes internally - the stated terminology is only concerned with the eventual output of the feature selection algorithm. In this paper, a broad perspective is taken and not only feature selection methods but feature ranking methods generally are considered.
+
+\textbf{Feature Ranking} is a broader term compared to Feature Selection, mapping onto more domains than just Feature Selection. Because in the construction of a Feature Ranking no assumptions are made on the desired data subset, a score is assigned to each of the dataset features, giving each dimension an `importance' score. Such scores can also be used to interpret and clarify a Machine Learning model: thus making such ranking processes useful to the interpretable AI domain.
+
+% Categories of dimensionality reduction / feature screening / etc.
+\textbf{Feature projection} and Feature Selection are both processes relating to the concept of dimensionality reduction \citep{cunningham_dimension_2007}, however, there exists an important distinction between them. Whilst in the process of feature selection, relevant dimensions are sought and selected without altering their input values, in the process of feature projection (also called \textit{feature extraction}) data transformations are applied, mapping the original data onto a lower-dimensional space. Common methods of feature projection are \textit{\gls{pca}} for the supervised case and \textit{\gls{lda}} for the unsupervised case. Both \gls{pca} and \gls{lda} take a statistical approach to detecting feature interactions, which not always results in an optimal feature set for prediction. Rather, machine learning techniques can be used to select a more optimal subset. Although the two methods are different, the two aim at achieving the same goal and are thus encountered in similar contexts.
+
+
+
+\subsection{Types of Feature Rankings}\label{section:methods-ranking-types}
+To better understand in what form a Feature Ranking might be defined and how it relates to the process of Feature Selection, exact mathematical definitions of various types of feature rankings are given first. At all times, the prediction- or estimation of any quantity is denoted with a hat notation, i.e. `\textasciicircum', whilst the `true' value of the quantity has no such hat.
+
+
+
+\subsubsection{Feature importance}\label{section:feature-importance-definition}
+Feature importance scores are defined as a vector of $p$ dimensions, containing real-valued numbers. Let us define the vector like so:
+
+\begin{equation}
+\hat{\boldsymbol{w}} = (\hat{w}_1, \hat{w}_2, \ldots, \hat{w}_{p-1}, \hat{w}_p),
+\end{equation}
+
+where $\hat{\boldsymbol{w}} \in \mathbb{R}^p$. Such a ranking is obtained, for example, by running a feature ranker on the dataset and having it assigned as score to each dimension. The vector is assumed to be normalized, i.e. each vector element is divided by the vector sum:
+
+\begin{equation}\label{eq:normalize-feature-ranking}
+\hat{\boldsymbol{w}} = \frac{\hat{\boldsymbol{r}}}{\sum^p_{i=1} \hat{r}_i},
+\end{equation}
+
+given a scoring vector $\hat{\boldsymbol{r}}$, which indicates feature importance on an arbitrary scale. It is self-evident that $\hat{\boldsymbol{w}}$ has the property that $\sum^p_{i=1} \hat{w}_i = 1$, i.e. is a probability vector. An example such vector can be:
+
+\begin{equation}\label{eq:importance-vector-example}
+\hat{\boldsymbol{w}} = (0.20, 0.8, 0.0),
+\end{equation}
+
+in which it is clear that the ranking algorithm found the second feature to be the most important. In the case where multiple feature importance vectors are considered, e.g., in the case where $B$ bootstraps (Section~\ref{section:bootstrapping}) are considered, the vectors are stacked in a matrix, i.e.:
+
+\begin{equation}\label{eq:feature-importance-matrix}
+\mathbf{\hat{W}} \in \mathbb{R}^{B \times p},
+\end{equation}
+
+which denotes $B$ feature importance $p$-dimensional vectors arranged in a matrix of reals. The ground-truth $w$ will remain a vector, since there will still be only one such vector available per dataset.
+
+
+
+\subsubsection{Feature support}\label{section:feature-support-definition}
+Feature support indicates whether certain dimensions are chosen to be included a \textit{feature subset}; i.e. the vector marks elements as being chosen by the feature selection process. In this definition, the feature support vector is synonymous with the definition of a feature subset. Although some feature- ranking and selection processes approximate a suitable feature support vector directly, an algorithm can also make use of a threshold $\epsilon$ to generate a feature support vector from a feature importance vector. The feature support vector is a boolean-valued vector of $p$ dimensions.
+
+\begin{equation}
+\hat{\boldsymbol{s}} = (\hat{s}_1, \hat{s}_2, \ldots, \hat{s}_{p-1}, \hat{s}_p),
+\end{equation}
+
+where $\hat{\boldsymbol{s}} \in \mathbb{B}^p$. Note $\mathbb{B}$ is the boolean-valued vector space, i.e. its elements lie in the set $\{0, 1\}$. An example such vector can be:
+
+\begin{equation}\label{eq:support-vector-example}
+\hat{\boldsymbol{s}} = (1, 1, 0),
+\end{equation}
+
+which is the feature support mask obtained from thresholding the feature importance vector $\hat{\boldsymbol{w}}$ in the above example (Equation~\ref{eq:importance-vector-example}) using the threshold $\epsilon > 0.0$, causing one feature to be dropped from the feature subset. Just like for the feature importance vector, the feature support vectors can be arranged in a matrix in the boolean space, like so:
+
+\begin{equation}\label{eq:feature-support-matrix}
+\mathbf{\hat{S}} \in \mathbb{B}^{B \times p},
+\end{equation}
+
+given $B$ feature support vectors.
+
+A \textbf{sparse representation} can also be constructed, given a feature support vector. A set is created containing only the indices of the selected features, causing a more sparse representation of the feature subset in case of high dimensionality and relatively few selected features. The support vector $\boldsymbol{s}$ and its prediction $\hat{\boldsymbol{s}}$ can be readily converted back- and forth into such a sparse representation. We define the sparse representation as the set $\hat{\mathbb{S}}$:
+
+\begin{equation}
+\hat{\mathbb{S}} = \{i \mid i \in \mathbb{Z} \wedge \hat{s}_i = 1 \},
+\end{equation}
+
+where $| \hat{\mathbb{S}} | = d$, i.e. $d$ dimensions were selected in the feature subset. Note, that the sparse feature subset is represented as a \textit{set} instead of a vector, meaning that the sequence is no longer considered ordered. To show a concrete example, the vector from Equation~\ref{eq:support-vector-example} is converted to the following set:
+
+\begin{equation}
+\hat{\mathbb{S}} = \{ 2, 1 \} \text{ where } | \hat{\mathbb{S}} | = 2,
+\end{equation}
+
+containing the indices of the selected features as defined in Eq~\ref{eq:support-vector-example}, in no particular ordering whatsoever. A sparse set $\hat{\mathbb{S}}$ can be converted back to a feature support vector $\hat{\boldsymbol{s}}$ like so:
+
+\begin{equation}
+\hat{s}_i = \begin{cases}
+  1 & \text{if } i \in \hat{\mathbb{S}}\\
+  0 & \text{otherwise}
+\end{cases}
+\end{equation}
+
+Denote $B$ such sparse feature support sets as $\hat{\mathbb{S}}^{boot}$:
+
+\begin{equation}\label{eq:feature-support-superset}
+\hat{\mathbb{S}}^{boot} = \{ \hat{\mathbb{S}}_1, \hat{\mathbb{S}}_2, \ldots, \hat{\mathbb{S}}_{B-1}, \hat{\mathbb{S}}_B \},
+\end{equation}
+
+meaning $B$ sparse support sets were arranged in the superset $\hat{\mathbb{S}}^{boot}$.
+
+
+
+\subsubsection{Feature rankings}\label{section:feature-rankings-definition}
+Feature rankings are similar to feature importance scores, but with less precision. Whereas in a feature importance vector each element is approximated with a real-valued score, in an ordinary feature ranking the only considered facet is the \textbf{order} of the features in terms of importance. Although in most cases a feature importance vector is constructed first, after which a support or ranking vector can be constructed, in some cases only a ranking is available - e.g. in the case of \gls{rfe}. A feature ranking is constructed by assigning each dimension a rank, anywhere in the integer set $\{1, 2, \ldots, p - 1, p\}$. Such, the vector can be expressed as:
+
+\begin{equation}
+\hat{\boldsymbol{r}} = (r_1, r_2, \ldots, r_{p-1}, r_p),
+\end{equation}
+
+where $\hat{\boldsymbol{r}} \in \mathbb{Z}^p$, the integer-space. An example such vector can be:
+
+\begin{equation}\hat{\boldsymbol{r}} = (2, 3, 1),\end{equation}
+
+which is the feature ranking obtained from converting the feature importance vector $\hat{\boldsymbol{w}}$ in the above example (Eq~\ref{eq:importance-vector-example}) to a ranking. Such rankings are easily converted to importance vectors using Equation~\ref{eq:normalize-feature-ranking}, allowing one to use the same statistical machinery as for feature importance vectors. A higher rank number means a greater importance.
+
+Such an integer-valued ranking can be utilised to select some $k$ best features to use in a subsequent learning task, i.e. to perform a feature subset selection. This is similar to selecting features using a threshold value $\epsilon$: now, however, a certain amount of features is selected - which is not the case for using a threshold value. Even though the feature- importance and ranking vectors both have the ability to select feature subsets, the feature importance vector carries more meaning, which can be made to good use during the evaluation process of the feature rankings using synthetically generated datasets, which will be elaborated upon later.
+
+
+
+
+\subsection{Taxonomy}
+Feature Rankings can be constructed by running a separate statistical operation on the dataset, before running any learning algorithms, or as part of a learning algorithm itself. In some cases, a learning algorithm that is itself very sophisticated and time-consuming might still be worthwhile to use as a feature selection pre-processing step - if time is saved by having the prediction estimator process less features, processing efficiency might be gained by using a feature selector.
+
+Due to this distinction in the approach used in a feature ranking algorithm, a subdivision can be made to separate methods into more specific categories. As such, a common taxonomy in the field is created: subdividing feature ranking methods into the categories of filter-, wrapper- and embedded methods \citep{chandrashekar_survey_2014}.
+
+
+
+\subsubsection{Filter methods}
+Filter methods use some scoring mechanism to compute \lq usefulness' for each feature, without applying a learning algorithm. Having applied some ranking criterion, often a feature ranking is produced, after which some thresholding operation can be applied to select features. Although filter methods are often computationally light and do not overfit due to the absence of a learning algorithm, filter methods might miss out on more complex feature interactions, causing a non-optimal subset as a result. Also, choosing a suitable threshold to use can be difficult.
+
+Examples of filter methods include the \textit{Fast Correlation Based Filter} \citep{yu_feature_2003}, which uses a quick and easy-to-compute statistical measure to select features according to some predefined threshold $\epsilon$ (in Yu et al. denoted as $\delta$). To illustrate the type of statistical quantities generally used in filter methods, the statistical quantity in Yu et al (2003) can be denoted like so:
+
+\begin{equation}
+S U(X, Y)=2\left[\frac{I G(X \mid Y)}{H(X)+H(Y)}\right],
+\end{equation}
+
+where $I G(X|Y)$ is the \textit{information gain} between two random variables $X$ and $Y$ and $H(X)$ is the \textit{entropy} of a variable: which are both metrics coming from the information-theoretical domain. The measure $SU(X, Y)$, then, is the \textit{symmetrical uncertainty} of two features $X$ and $Y$, where a feature $Y$ is more correlated to $X$ than to $Z$ if $IG(X, Y) > IG(Z, Y)$. In this way, a ranking can be constructed considering the measure $SU(X, Y)$, where feature are sought with high $SU$ scores. In a second phase of the algorithm, the scoring table is traversed yet again, to eliminate possible redundant features included in the selected feature subset.
+
+
+
+\subsubsection{Wrapper methods}
+Wrapper methods, on the other hand, use some learning algorithm to determine a suitable subset of features. A search is conducted over the space of possible feature subsets, eventually selecting the subset that has the highest validation score in the test set using a chosen learner as a predictor. Characteristics that define wrapper methods lend themselves similar characteristics to traditional optimisation problems; although an exhaustive search might yield an optimal solution, such a solution might not always be feasible due to its great time complexity. For this reason, in some applications a filter is applied first, before running a wrapper method.
+
+Examples of such methods are numerous. Straight-forward methods include the range of \textit{sequential} feature selection methods, which aim to start (1) either with the full subset of dataset features or (2) with an empty set of features. The two approaches are called \textit{Forward} Feature Selection and \textit{Backward} Feature Elimination, respectively. To then facilitate a forward- or backward iteration step it is customary to use an estimator of some kind to retrieve a scoring on the features, selecting either the best- or eliminating the worst scored feature. \gls{rfe} is one such backward-elimination method, which might, for example, use a \gls{svm} to construct estimation scores \citep{maldonado_weber_2009}. Another option is to perform an exhaustive search, in which every feature combination is tried such to obtain the optimal feature subset, given the learning task and the estimator used. To obtain such a ranking, the chosen estimator might use an arbitrary method to compute it, be it a relatively simple learning step or a sophisticated model evaluation. Although such methods can perform reasonably well, such methods tend to be more time-consuming than filter methods.
+
+
+
+\subsubsection{Embedded methods}
+Embedded methods seek to combine the training task and feature selection. Given some suitable learner, features are weighted during the training process, producing either a feature ranking or a feature subset afterwards. e.g. some learners compute feature importance scores as part of their training process, which can then be used in combination with some threshold to select relevant features. Having already trained the model, subsequent prediction tasks can benefit from increased prediction speed by using less data.
+
+Examples of embedded methods are \gls{lasso} and Ridge Regression, which perform feature selection alongside the process of finding optimal regression coefficients. For further explanations, see Section~\ref{section:ridge-regression}. Another notable embedded method is a \gls{dt}, which constructs, inherent during its fitting stage, a measure of importance on each variable. It does so by computing the probability of reaching a certain node - and determining the decrease in node impurity caused by weighting this probability value. To facilitate this computation, the probability of reaching a certain node is computed by considering the number of samples that reach the node during its decision-phase, divided by the total number of samples. Such, the leaves and depth obtained during the construction phase of the \gls{dt} can be used to determine a measure of feature importance, `embedded' into its learning phase.
+
+
+
+\subsubsection{Hybrid methods}
+A hybrid method is any method that is not classifiable by a single category, but rather lends from multiple categories. Hybrid methods can, for example, combine filter and wrapper methods \citep{hsu_hybrid_2011}, by first applying a computationally efficient filter and refining the result by using a wrapper method. Another paper \citep{das_filters_2001} describes its approach as hybrid due to both adding- and removing features in the feature selection process - exhibiting both forward- and backward selection at the same time. Lately, research was also put into examining \textit{Ensemble} feature selection methods \citep{bolon-canedo_ensembles_2019}, which combines the outputs of multiple selectors and decides useful features accordingly using some voting committee. Ensemble methods can be seen as hybrids or are seen as a category on its own.
+
+
+
+\subsection{Types of features}
+An important consideration in choosing a suitable feature selection method for any task is what kind of structure the concerning data has, if any at all. Data might exhibit tree, graph, or grouped structures, which is essential information when detecting feature interactions and determining useful features. Support for structured data is relatively new in the field and has not been an extensive point of concern for many feature selection algorithms in the past. Many traditional feature selection algorithms focused primarily `\textit{conventional flat}' features \citep{li_feature_2017}, in which the assumption is made that the data is independent and identically distributed (\textit{i.i.d.}). However, this assumption is widespread among many machine learning algorithms, since in many applications datasets are normalized to fit the i.i.d. condition before they are used.
+
+Conventional data are opposed to more complex data structures, i.e., datasets with `structured features', as coined by the proposed taxonomy from J. Li et al (2017) \cite{li_feature_2017}, but also to linked data and \textit{streaming data}. In streaming data, the quality of an initially selected feature subset can be improved as more data comes in, and a feature selection algorithm is able to benefit from a larger distribution of samples. Adapting existing feature selection algorithms to fit the demands of streaming data proved to be a nontrivial problem. Nowadays, many companies and institutions have to deal with data volumes that easily exceed the boundaries of in-memory storage capacity - limiting the data scientist to train on only subsets of the entire datasets. Smart sampling is therefore needed to retain a representative sample distribution.
+
+The scope of this research is limited to only the most common type of features, \textbf{conventional-, flat features} (\textit{i.i.d.}), or also \textit{tabular} data.
+
+
+
+\subsection{Constructing Feature Rankings}
+Although the number of existing feature ranking methods are numerous, a small set of example methods are explored to get a better understanding of the range of methods that do exist. First of all, a way of constructing a feature ranking that originates from classical statistics is examined. Next, a more algorithmic-type of approach is examined, which was specifically designed for the feature selection domain.
+
+
+
+\subsubsection{Regularized Linear Regression}\label{section:ridge-regression}
+One of the most fundamental methods in statistics is linear regression. It can be solved both analytically and numerically: in which the optimal approach is dependent on the amount of dataset dimensions at hand - where the amount of dataset dimensions $p$ gets very large, the analytic solution gets slower compared to an approximate method like Stochastic Gradient Descent. Recall that we can analytically solve Linear Regression by minimizing the Residual Sum-of-Squares cost function \citep{hastie_elements_2009}:
+
+\begin{equation}\text{R}(\boldsymbol{\beta}) = (\mathbf{Y} - \mathbf{Z} \boldsymbol{\beta})^\intercal (\mathbf{Y} - \mathbf{Z} \boldsymbol{\beta}),\end{equation}
+
+in which $\mathbf{Z}$ is our design matrix. Regression using this loss function is also referred to as `Ordinary Least Squares'. The mean of the cost function $\text{R}$ over all samples is called Mean Squared Error, or MSE. Our design matrix is built by appending each data row with a bias constant of 1 - an alternative would be to first center our data to get rid of the intercept entirely. To now minimize our cost function we differentiate $\text{R}$ with respect to $\boldsymbol{\beta}$, giving us the following unique minimum:
+
+\begin{equation}\hat{\boldsymbol{\beta}} = (\mathbf{Z}^\intercal \mathbf{Z})^{-1} \mathbf{Z}^\intercal \mathbf{Y},\end{equation}
+
+which results in the estimated least-squares coefficients given the training data, also called the normal equation. We can classify by simply multiplying our input data with the found coefficient matrix: $\hat{\mathbf{Y}} = \mathbf{Z} \hat{\boldsymbol{\beta}}$. Now, in the case where our model is fit using multiple explanatory variables, we are at risk of suffering from \textit{multicolinearity} - the situation where multiple explanatory variables are highly linearly related to each other causing non-optimal fitting of the model coefficients.
+
+In \textbf{Ridge regression}, we aim to tamper the least squares tendency to get as `flexible' as possible to fit the data best it can. This might, however, cause parameters to get very large. We therefore like to add a penalty on the regression parameters $\boldsymbol{\beta}$; we penalise the loss function with a square of the parameter vector $\boldsymbol{\beta}$ scaled by new hyperparameter $\lambda$. This is called a \textit{shrinkage method}, or also: \textit{regularization}. This causes the squared loss function to become:
+
+\begin{equation}\text{R}(\boldsymbol{\beta}) = (\mathbf{Y} - \mathbf{Z} \boldsymbol{\beta})^\intercal (\mathbf{Y} - \mathbf{Z} \boldsymbol{\beta})+\lambda \boldsymbol{\beta}^\intercal \boldsymbol{\beta},\end{equation}
+
+where we can see that $\boldsymbol{\beta}^\intercal \boldsymbol{\beta}$ denotes the square of the parameter vector, thus supplementing the loss function with an extra penalty. This is called regularization with an $L^2$ norm; which generalization is called \textit{Tikhonov regularization}, which allows for the case where not every parameter scalar is regularized equally. If we were to now derive the solutions of $\boldsymbol{\beta}$ given this new cost function by differentiation w.r.t. $\boldsymbol{\beta}$:
+
+\begin{equation}\hat{\boldsymbol{\beta}}^{\text {ridge }}=\left(\mathbf{Z}^{T} \mathbf{Z}+\lambda \mathbf{I}\right)^{-1} \mathbf{Z}^{T} \mathbf{Y},\end{equation}
+
+in which $\lambda$ will be a scaling constant that controls the amount of regularization that is applied. Note $\mathbf{I}$ is the $p \times p$ identity matrix - in which $p$ are the amount of data dimensions used. An important intuition to be known about Ridge Regression, is that directions in the column space of $\mathbf{Z}$ with small variance will be shrunk the most; this behavior can be easily shown be deconstructing the least-squares fitted vector using a \gls{svd}. 
+
+\textbf{\gls{lasso} regression} is a slightly modified variant of Ridge Regression, where instead of an $L^2$ norm an $L^1$ norm is used instead. This problem can be denoted as the following minimization problem:
+
+\begin{equation}
+\hat{\boldsymbol{\beta}}^{\text {lasso }}=\underset{\boldsymbol{\beta}}{\operatorname{argmin}}\left\{\frac{1}{2} \sum_{i=1}^{N}\left(y_{i}-\beta_{0}-\sum_{j=1}^{p} x_{i j} \beta_{j}\right)^{2}+\lambda \sum_{j=1}^{p}\left|\beta_{j}\right|\right\},
+\end{equation}
+
+in which the similarities between Ridge Regression are easily seen. The squared $\sum_1^p \beta^2_j$ ridge penalty is replaced by by the $L^1$ norm penalty of $\sum_1^p |\beta_j|$.
+
+\textbf{Feature selection} can be employed using both \gls{lasso}- and Ridge regression. Because the dimensions whose coefficients are shrunk the most are presumably the least relevant to the prediction task, non-contributing features can be cut off from the design matrix using a threshold point. In fact, because \gls{lasso} does not square the weights vector but takes the absolute value, some coefficients might even be shrunk to near-zero values: removing the need for defining a threshold at all, since the coefficients have zero contribution already. In line with the feature subset definition given in Section~\ref{section:feature-support-definition}, such a feature support set can be constructed by thresholding the \gls{lasso} coefficients like so:
+
+\begin{equation}
+\hat{\mathbb{S}}^{lasso} = \{ j \mid \lvert \beta_j \rvert \geq \epsilon \},
+\end{equation}
+
+which will result in a feature support set containing only the indices of features where the coefficients were at least larger than $\epsilon$.
+
+Although the former methods are suited for regression tasks only, regularization schemes are employed widely and have similar mechanics in these applications. Examples are numerous and include regularized Logistic Regression, regularized \glspl{svm} and regularized Neural Networks: employing regularization in any Machine Learning model is standard practice. In this way, we gained insight into a fundamental tool to estimate feature importance and shrinking the model coefficients using a regularization term - and more importantly, the fact that it can be employed for feature selection.
+
+
+
+\subsubsection{Relief-Based Feature Selection algorithms}
+The Relief-family of feature selection algorithms originates from a seminal paper by Kira et al. \citep{kira_feature_1992}, introducing the original version of the Relief algorithm. Over time, many variations on the Relief algorithm have been made, most notably ReliefF \citep{kononenko_estimating_1994}. In fact, so many variations on the algorithm were made that one can speak of \glspl{rba} in the literature \citep{urbanowicz_relief-based_2018}. Due to the overall architectural design of the algorithm, \glspl{rba} manage to rank features and optionally select a feature subset within a reasonable time-complexity domain and is often competitive when it comes to validation estimator performance.
+
+The algorithm works by usage of an \textit{instance-based} learning method, considering one data sample at a time and updating statistics on feature importance. Given a training dataset $\mathbf{Z}$, $n$ samples, $p$ dimensions and a relevancy threshold $\epsilon$, Relief can compute a measure of feature importance in a finite amount of time. The essential concept is to compute the $p$-dimensional Euclidean distance for a randomly picked instance, iterating over all dataset samples and computing the \textit{nearest `miss'} and \textit{nearest `hit'} for every instance. Such a miss- or hit is defined to be either one of the positive- or negative dataset instances. To now compute how much `relevance' should be added for each feature given the closest hit- and miss, a subroutine is used, in which for every feature the \textsc{diff} between the randomly picked instance and nearest- hit and miss is computed and squared.
+
+Once the iterations are complete, the summed weights for each feature are stored in a vector $\boldsymbol{w}^{relief}$. Once all $n$ samples have been traversed, the feature weights vector $\boldsymbol{w}^{relief}$ is normalized by dividing by the amount of samples $n$. In this way, a ranking is constructed - which can be converted into a feature subset by applying the threshold $\epsilon$ to the ranking. i.e., using the notation introduced in \ref{section:methods-ranking-types}, a feature subset can be constructed like so:
+
+\begin{equation}
+\hat{\mathbb{S}}^{relief} = \{ i \mid \boldsymbol{w}^{relief}_i \geq \epsilon \},
+\end{equation}
+
+given some threshold $\epsilon$.
+
+
+\biblio
+\end{document}
