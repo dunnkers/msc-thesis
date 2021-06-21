@@ -2,6 +2,7 @@ import os
 import re
 import subprocess
 import sys
+from io import StringIO
 from subprocess import PIPE, Popen
 
 import pandas as pd
@@ -33,7 +34,7 @@ print("estimator mapping constructed " + TerminalColor.green("✓"))
 
 # retrieve runs from API
 api = wandb.Api()
-runs = api.runs("dunnkers/fseval", filters={"$or": [{"group": GROUP}]})
+runs = api.runs("dunnkers/fseval", filters={"$or": []})
 print(f"Found {TerminalColor.yellow(str(len(runs)))} runs.")
 
 # stdout
@@ -42,6 +43,10 @@ writing_to_file = sys.argv[1:]
 if writing_to_file:
     outputfile = sys.argv[1]
     f = open(outputfile, "w")
+else:
+    print(
+        TerminalColor.red("⚠️ no output file configured. Set as first arg to program.")
+    )
 
 
 def get_peregrine_output(cmd):
@@ -54,8 +59,12 @@ def get_peregrine_output(cmd):
 
     stdout, stderr = Popen(cmds, stdout=PIPE).communicate()
 
-    output = stdout.decode("utf-8").split("\n")
-    return output
+    decoded = stdout.decode("utf-8")
+
+    file = StringIO(decoded)
+    df = pd.read_csv(file)
+
+    return df
 
 
 #%%
@@ -68,14 +77,14 @@ for i, run in enumerate(runs):
         if should_process
         else TerminalColor.purple("skipping")
     )
-    if writing_to_file:
-        print(
-            f"{i + 1}/{len(runs)} "
-            + process_text
-            + " run "
-            + TerminalColor.yellow(run.id)
-            + f" ({run.state})"
-        )
+
+    print(
+        f"{i + 1}/{len(runs)} "
+        + process_text
+        + " run "
+        + TerminalColor.yellow(run.id)
+        + f" ({run.state})"
+    )
 
     if not should_process:
         continue
@@ -93,67 +102,74 @@ for i, run in enumerate(runs):
         print(TerminalColor.red(f"corrupt config: " + f"{run.id}"))
         continue
 
-    run_dir = config.get("storage_provider/save_dir")
-    if not run_dir:
+    save_dir = config.get("storage_provider/save_dir")
+    print(f"(found `save_dir={save_dir}`, but not using it.")
+    # if not run_dir:
 
-        ### grabbing the run dir
-        script_dir = f"/home/{os.environ.get('PEREGRINE_USERNAME')}/msc-thesis/jobs"
-        # fetch run dir
-        output = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
-        result = output[-2]
+    ### grabbing the run dir
+    script_dir = f"/home/{os.environ.get('PEREGRINE_USERNAME')}/msc-thesis/jobs"
+    # fetch run dir
+    df = get_peregrine_output(f"sh {script_dir}/_get_run_path.sh {run.id}")
 
-        if result == "fail" or result == "":
-            print(TerminalColor.red(f"incorrect result: {result}"))
-            continue
+    if df.empty:
+        print(TerminalColor.red(f"no run dir found, empty dataframe."))
+        continue
 
-        run_dir = result
-        n_pickles = int(output[-3])
+    print(df)
+
+    for i, row in df.iterrows():
+        run_dir = row["run_dir"]
+        n_pickles = row["n_pickles"]
+
         n_validations = min(50, p)
         n_pickles_should_be = n_bootstraps * n_validations + n_bootstraps
-        if not (
+
+        if (
             n_pickles == n_pickles_should_be
             or n_pickles == n_pickles_should_be + n_bootstraps
         ):
+            # print(f"using: {run_dir} " + TerminalColor.green("✓"))
+            print(TerminalColor.green("✓") + " found " + TerminalColor.yellow(run_dir))
+            print(f"found {TerminalColor.yellow(n_pickles)} pickle files.")
+            break
+        else:
             print(
                 TerminalColor.red(
                     f"incorrect n_pickles: "
                     + f"expected {n_pickles_should_be}, was {n_pickles}"
                 )
             )
-            continue
-    else:
-        ...
 
-    if writing_to_file:
-        print(TerminalColor.green("✓") + " found " + TerminalColor.yellow(run_dir))
+    if not run_dir:
+        print("no run dir found.")
 
     dataset = dataset_mapping[dataset_name]
     ranker = estimator_mapping[ranker_name]
 
     if writing_to_file:
         sys.stdout = f
-    # "++callbacks.wandb.id={run.id}" \
-    # "++storage_provider.run_id={run.id}" \
-    print(
-        f"""fseval --multirun \
-"+backend=wandb" \
-"storage_provider=local" \
-"++storage_provider.load_dir={run_dir}" \
-"dataset={dataset}" \
-"estimator@validator=knn" \
-"estimator@ranker={ranker}" \
-"validator.load_cache=never" \
-"n_bootstraps=25" \
-"n_jobs=1" \
-"++callbacks.wandb.log_metrics=true" \
-"++callbacks.wandb.project=fseval" \
-"++callbacks.wandb.group=knn-cohort-3" \
-"hydra/launcher=rq" \
-"hydra.launcher.enqueue.result_ttl=1d" \
-"hydra.launcher.enqueue.failure_ttl=60d" \
-"hydra.launcher.stop_after_enqueue=true" \
-"hydra.launcher.fail_hard=true" """
-    )
-    sys.stdout = original_stdout
+        # "++callbacks.wandb.id={run.id}" \
+        # "++storage_provider.run_id={run.id}" \
+        print(
+            f"""fseval --multirun \
+    "+backend=wandb" \
+    "storage_provider=local" \
+    "++storage_provider.load_dir={run_dir}" \
+    "dataset={dataset}" \
+    "estimator@validator=knn" \
+    "estimator@ranker={ranker}" \
+    "validator.load_cache=never" \
+    "n_bootstraps=25" \
+    "n_jobs=1" \
+    "++callbacks.wandb.log_metrics=true" \
+    "++callbacks.wandb.project=fseval" \
+    "++callbacks.wandb.group=knn-cohort-3" \
+    "hydra/launcher=rq" \
+    "hydra.launcher.enqueue.result_ttl=1d" \
+    "hydra.launcher.enqueue.failure_ttl=60d" \
+    "hydra.launcher.stop_after_enqueue=true" \
+    "hydra.launcher.fail_hard=true" """
+        )
+        sys.stdout = original_stdout
 
 print("✨ all done " + TerminalColor.green("✓"))

@@ -5,7 +5,7 @@ Benchmarking feature rankers using [fseval](https://github.com/dunnkers/fseval).
 Install [fseval](https://github.com/dunnkers/fseval). Then run:
 
 ```shell
-pg -t "srun --ntasks=1 --time=00:30:00 --mem=5000 --chdir=/scratch/s2995697/fseval/ --partition=short --pty bash -i"
+pg -t "srun --ntasks=1 --time=02:00:00 --mem=10000 --chdir=/scratch/s2995697/fseval/ --partition=regular --pty bash -i"
 
 sh ~/msc-thesis/jobs/_prepare_env.sh
 module load Python/3.8.6-GCCcore-10.2.0
@@ -13,19 +13,19 @@ source $TMPDIR/venv_${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}/bin/activate
 
 fseval \
     "--multirun" \
-    "dataset=synclf_hard" \
+    "dataset=synclf_easy,synclf_medium,synclf_hard,synclf_very_hard" \
     "estimator@ranker=glob(*)" \
-    "estimator@validator=decision_tree" \
-    "resample.sample_size=range(100, 2100, 200)" \
-    "n_bootstraps=10" \
-    "n_jobs=10" \
+    "estimator@validator=knn" \
+    "resample.sample_size=1.0" \
+    "n_bootstraps=25" \
+    "n_jobs=25" \
     "storage_provider=local" \
     "callbacks=[wandb]" \
-    "++callbacks.wandb.project=fseval-learning-curve" \
+    "++callbacks.wandb.project=fseval" \
     "++callbacks.wandb.log_metrics=true" \
-    "++callbacks.wandb.group=lc-1" \
+    "++callbacks.wandb.group=synclf-and-synreg" \
     "hydra/launcher=rq" \
-    "hydra.launcher.queue=learning-curve" \
+    "hydra.launcher.queue=synclf-and-synreg" \
     "hydra.launcher.enqueue.result_ttl=1d" \
     "hydra.launcher.enqueue.failure_ttl=60d" \
     "hydra.launcher.stop_after_enqueue=true" \
@@ -43,14 +43,14 @@ From your laptop, run:
 
 ```shell
 pg "cd msc-thesis; git pull && git log -n 1"
-pg "sbatch --array=0-4 ~/msc-thesis/jobs/rq_worker.sh"
+pg "sbatch --array=0-2 --ntasks=13 --dependency=afterany:20579282 --partition=himem --mem=260000 --time=72:00:00 --export=queue=tabnet-run ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
 ## Enqueue runs
 ```shell
 pg "cd msc-thesis; git pull && git log -n 1"
 pg "sbatch ~/msc-thesis/jobs/enqueue_runs.sh"
-pg "sbatch --array=0-4 --dependency=afterok:<job_id> ~/msc-thesis/jobs/rq_worker.sh"
+pg "sbatch --array=0-4 --dependency=afterok:<job_id> --export=queue=default ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
 
