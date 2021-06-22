@@ -35,6 +35,14 @@ print("estimator mapping constructed " + TerminalColor.green("✓"))
 # retrieve runs from API
 api = wandb.Api()
 runs = api.runs("dunnkers/fseval", filters={"$or": []})
+
+
+def specific_runs(run_ids):
+    return lambda run: run.id in run_ids
+
+
+# runs = list(filter(specific_runs(["1azi6ic6"]), runs))
+
 print(f"Found {TerminalColor.yellow(str(len(runs)))} runs.")
 
 # stdout
@@ -71,24 +79,6 @@ def get_peregrine_output(cmd):
 print("processing runs...")
 df = pd.DataFrame()
 for i, run in enumerate(runs):
-    should_process = run.state == "finished"
-    process_text = (
-        TerminalColor.blue("processing")
-        if should_process
-        else TerminalColor.purple("skipping")
-    )
-
-    print(
-        f"{i + 1}/{len(runs)} "
-        + process_text
-        + " run "
-        + TerminalColor.yellow(run.id)
-        + f" ({run.state})"
-    )
-
-    if not should_process:
-        continue
-
     config = run.config
 
     # get config, and assure they all exist
@@ -98,8 +88,32 @@ for i, run in enumerate(runs):
         n_bootstraps = int(config["n_bootstraps"])
         dataset_name = config.get("dataset/name") or config["dataset"]["name"]
         ranker_name = config.get("ranker/name") or config["ranker"]["name"]
+        validator_name = config.get("validator/name") or config["validator"]["name"]
+        group = (
+            config.get("callbacks/wandb/group") or config["callbacks"]["wandb"]["group"]
+        )
+        dataset_group = config.get("dataset/group") or config["dataset"]["group"]
     except Exception:
         print(TerminalColor.red(f"corrupt config: " + f"{run.id}"))
+        continue
+
+    ### SHOULd PROCESS??
+    should_process = run.state == "finished"
+    if dataset_group == "Synclf" or dataset_group == "Synreg":
+        should_process = False
+    process_text = (
+        TerminalColor.blue("processing")
+        if should_process
+        else TerminalColor.purple("skipping")
+    )
+    print(
+        f"{i + 1}/{len(runs)} "
+        + process_text
+        + " run "
+        + TerminalColor.yellow(run.id)
+        + f" ({run.state})"
+    )
+    if not should_process:
         continue
 
     save_dir = config.get("storage_provider/save_dir")
@@ -132,38 +146,41 @@ for i, run in enumerate(runs):
             print(TerminalColor.green("✓") + " found " + TerminalColor.yellow(run_dir))
             print(f"found {TerminalColor.yellow(n_pickles)} pickle files.")
             break
-        else:
-            print(
-                TerminalColor.red(
-                    f"incorrect n_pickles: "
-                    + f"expected {n_pickles_should_be}, was {n_pickles}"
-                )
-            )
 
     if not run_dir:
         print("no run dir found.")
 
+        print(
+            TerminalColor.red(
+                f"n_pickles were: "
+                + df["n_pickles"].values
+                + " but expected: "
+                + n_pickles_should_be
+            )
+        )
+
     dataset = dataset_mapping[dataset_name]
     ranker = estimator_mapping[ranker_name]
+    validator = estimator_mapping[validator_name]
 
     if writing_to_file:
         sys.stdout = f
-        # "++callbacks.wandb.id={run.id}" \
         # "++storage_provider.run_id={run.id}" \
+        # "validator.load_cache=never" \
         print(
             f"""fseval --multirun \
-    "+backend=wandb" \
-    "storage_provider=local" \
+    "callbacks=[wandb]" \
+    "+storage_provider=local" \
     "++storage_provider.load_dir={run_dir}" \
-    "dataset={dataset}" \
-    "estimator@validator=knn" \
-    "estimator@ranker={ranker}" \
-    "validator.load_cache=never" \
+    "+dataset={dataset}" \
+    "+estimator@validator={validator}" \
+    "+estimator@ranker={ranker}" \
     "n_bootstraps=25" \
-    "n_jobs=1" \
-    "++callbacks.wandb.log_metrics=true" \
+    "n_jobs=13" \
+    "++callbacks.wandb.id={run.id}" \
+    "++callbacks.wandb.log_metrics=false" \
     "++callbacks.wandb.project=fseval" \
-    "++callbacks.wandb.group=knn-cohort-3" \
+    "++callbacks.wandb.group=fixed-fitting-time" \
     "hydra/launcher=rq" \
     "hydra.launcher.enqueue.result_ttl=1d" \
     "hydra.launcher.enqueue.failure_ttl=60d" \

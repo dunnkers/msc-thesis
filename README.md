@@ -13,9 +13,9 @@ source $TMPDIR/venv_${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}/bin/activate
 
 fseval \
     "--multirun" \
-    "dataset=synclf_easy,synclf_medium,synclf_hard,synclf_very_hard" \
-    "estimator@ranker=glob(*)" \
-    "estimator@validator=knn" \
+    "+dataset=synclf_easy" \
+    "+estimator@ranker=chi2" \
+    "+estimator@validator=knn" \
     "resample.sample_size=1.0" \
     "n_bootstraps=25" \
     "n_jobs=25" \
@@ -43,14 +43,14 @@ From your laptop, run:
 
 ```shell
 pg "cd msc-thesis; git pull && git log -n 1"
-pg "sbatch --array=0-2 --ntasks=13 --dependency=afterany:20579282 --partition=himem --mem=260000 --time=72:00:00 --export=queue=tabnet-run ~/msc-thesis/jobs/rq_worker.sh"
+pg "sbatch --array=0-2 --ntasks=13 --dependency=afterany:20579282 --partition=himem --mem=260000 --time=72:00:00 --export=queue=tabnet-run,burst=--burst ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
 ## Enqueue runs
 ```shell
 pg "cd msc-thesis; git pull && git log -n 1"
 pg "sbatch ~/msc-thesis/jobs/enqueue_runs.sh"
-pg "sbatch --array=0-4 --dependency=afterok:<job_id> --export=queue=default ~/msc-thesis/jobs/rq_worker.sh"
+pg "sbatch --array=0-4 --dependency=afterok:<job_id> --export=queue=default,burst=--burst ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
 
