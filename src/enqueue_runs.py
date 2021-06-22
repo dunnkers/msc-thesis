@@ -177,7 +177,7 @@ for i, run in enumerate(runs):
     "+estimator@ranker={ranker}" \
     "ranker.load_cache=must" \
     "n_bootstraps=25" \
-    "n_jobs=13" \
+    "n_jobs=1" \
     "++callbacks.wandb.id={run.id}" \
     "++callbacks.wandb.log_metrics=false" \
     "++callbacks.wandb.project=fseval" \
