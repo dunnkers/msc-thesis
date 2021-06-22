@@ -175,6 +175,7 @@ for i, run in enumerate(runs):
     "+dataset={dataset}" \
     "+estimator@validator={validator}" \
     "+estimator@ranker={ranker}" \
+    "ranker.load_cache=must" \
     "n_bootstraps=25" \
     "n_jobs=13" \
     "++callbacks.wandb.id={run.id}" \
