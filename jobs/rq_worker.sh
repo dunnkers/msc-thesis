@@ -23,4 +23,4 @@ rq worker \
     $queue \
     -u $REDIS_URL \
     --name ${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID} \
-    --burst
+    $burst
