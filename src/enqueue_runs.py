@@ -24,7 +24,11 @@ else:
 config = {}
 if writing_to_file:
     config["outputfile"] = outputfile
-wandb.init(project="fseval-enqueueing", config=config)
+slurm_job = os.environ.get("SLURM_JOB_ID", None)
+group_and_queue_name = "fix-fitting-time"
+wandb.init(
+    project="fseval-enqueueing", config=config, id=slurm_job, name=group_and_queue_name
+)
 
 
 # construct dataset mapping
@@ -94,7 +98,13 @@ for i, run in enumerate(runs):
             or config["callbacks"]["wandb"]["group"]
             or ""
         )
-        dataset_group = config.get("dataset/group") or config["dataset"]["group"] or ""
+        dataset_group = config.get("dataset/group", None)
+        if (
+            dataset_group is None
+            and config.get("dataset")
+            and config.get("dataset").get("group")
+        ):
+            dataset_group = config["dataset"]["group"]
     except Exception as e:
         print(TerminalColor.red(f"corrupt config: " + f"{run.id}"))
         print(e)
@@ -179,9 +189,9 @@ for i, run in enumerate(runs):
     "++callbacks.wandb.id={run.id}" \
     "++callbacks.wandb.log_metrics=false" \
     "++callbacks.wandb.project=fseval" \
-    "++callbacks.wandb.group=fix-fitting-time" \
+    "++callbacks.wandb.group={group_and_queue_name}" \
     "hydra/launcher=rq" \
-    "hydra.launcher.queue=fix-fitting-time" \
+    "hydra.launcher.queue={group_and_queue_name}" \
     "hydra.launcher.enqueue.result_ttl=1d" \
     "hydra.launcher.enqueue.failure_ttl=60d" \
     "hydra.launcher.stop_after_enqueue=true" \
