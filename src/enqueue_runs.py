@@ -8,13 +8,24 @@ from subprocess import PIPE, Popen
 import pandas as pd
 import wandb
 from fseval.types import TerminalColor
-
-print("importing hydra utils...")
 from fseval.utils.hydra_utils import get_group_configs, get_group_options
 
-print("hydra utils imported " + TerminalColor.green("✓"))
+# stdout
+original_stdout = sys.stdout
+writing_to_file = sys.argv[1:]
+if writing_to_file:
+    outputfile = sys.argv[1]
+    f = open(outputfile, "w")
+else:
+    print(
+        TerminalColor.red("⚠️ no output file configured. Set as first arg to program.")
+    )
+# start wandb
+config = {}
+if writing_to_file:
+    config["outputfile"] = outputfile
+wandb.init(project="fseval-enqueueing", config=config)
 
-GROUP = "cohort-1"
 
 # construct dataset mapping
 print("Constructing dataset mapping...")
@@ -34,6 +45,7 @@ print("estimator mapping constructed " + TerminalColor.green("✓"))
 
 # retrieve runs from API
 api = wandb.Api()
+GROUP = "cohort-1"
 runs = api.runs("dunnkers/fseval", filters={"$or": []})
 
 
@@ -42,19 +54,7 @@ def specific_runs(run_ids):
 
 
 # runs = list(filter(specific_runs(["1azi6ic6"]), runs))
-
 print(f"Found {TerminalColor.yellow(str(len(runs)))} runs.")
-
-# stdout
-original_stdout = sys.stdout
-writing_to_file = sys.argv[1:]
-if writing_to_file:
-    outputfile = sys.argv[1]
-    f = open(outputfile, "w")
-else:
-    print(
-        TerminalColor.red("⚠️ no output file configured. Set as first arg to program.")
-    )
 
 
 def get_peregrine_output(cmd):
@@ -90,31 +90,29 @@ for i, run in enumerate(runs):
         ranker_name = config.get("ranker/name") or config["ranker"]["name"]
         validator_name = config.get("validator/name") or config["validator"]["name"]
         group = (
-            config.get("callbacks/wandb/group") or config["callbacks"]["wandb"]["group"]
+            config.get("callbacks/wandb/group")
+            or config["callbacks"]["wandb"]["group"]
+            or ""
         )
-        dataset_group = config.get("dataset/group") or config["dataset"]["group"]
-    except Exception:
+        dataset_group = config.get("dataset/group") or config["dataset"]["group"] or ""
+    except Exception as e:
         print(TerminalColor.red(f"corrupt config: " + f"{run.id}"))
+        print(e)
         continue
 
     ### SHOULd PROCESS??
-    should_process = run.state == "finished"
+    # should_process = run.state == "finished"
     if dataset_group == "Synclf" or dataset_group == "Synreg":
-        should_process = False
-    process_text = (
-        TerminalColor.blue("processing")
-        if should_process
-        else TerminalColor.purple("skipping")
-    )
+        print("not processing: synclf or synreg dataset.")
+        continue
+
     print(
         f"{i + 1}/{len(runs)} "
-        + process_text
+        + TerminalColor.blue("processing")
         + " run "
         + TerminalColor.yellow(run.id)
         + f" ({run.state})"
     )
-    if not should_process:
-        continue
 
     save_dir = config.get("storage_provider/save_dir")
     print(f"(found `save_dir={save_dir}`, but not using it.")
@@ -129,7 +127,7 @@ for i, run in enumerate(runs):
         print(TerminalColor.red(f"no run dir found, empty dataframe."))
         continue
 
-    print(df)
+    print(f"{len(df)} storage places found.")
 
     for i, row in df.iterrows():
         run_dir = row["storage_dir"]
@@ -143,7 +141,7 @@ for i, run in enumerate(runs):
             or n_pickles == n_pickles_should_be + n_bootstraps
         ):
             # print(f"using: {run_dir} " + TerminalColor.green("✓"))
-            print(TerminalColor.green("✓") + " found " + TerminalColor.yellow(run_dir))
+            print(TerminalColor.green("✓") + " chose: " + TerminalColor.yellow(run_dir))
             print(f"found {TerminalColor.yellow(n_pickles)} pickle files.")
             break
 
@@ -192,3 +190,4 @@ for i, run in enumerate(runs):
         sys.stdout = original_stdout
 
 print("✨ all done " + TerminalColor.green("✓"))
+wandb.finish()
