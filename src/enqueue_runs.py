@@ -132,7 +132,7 @@ for i, run in enumerate(runs):
     print(df)
 
     for i, row in df.iterrows():
-        run_dir = row["run_dir"]
+        run_dir = row["storage_dir"]
         n_pickles = row["n_pickles"]
 
         n_validations = min(50, p)
