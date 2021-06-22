@@ -180,8 +180,9 @@ for i, run in enumerate(runs):
     "++callbacks.wandb.id={run.id}" \
     "++callbacks.wandb.log_metrics=false" \
     "++callbacks.wandb.project=fseval" \
-    "++callbacks.wandb.group=fixed-fitting-time" \
+    "++callbacks.wandb.group=fix-fitting-time" \
     "hydra/launcher=rq" \
+    "hydra.launcher.queue=fix-fitting-time" \
     "hydra.launcher.enqueue.result_ttl=1d" \
     "hydra.launcher.enqueue.failure_ttl=60d" \
     "hydra.launcher.stop_after_enqueue=true" \
