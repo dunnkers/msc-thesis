@@ -189,6 +189,7 @@ for i, run in enumerate(runs):
     "++callbacks.wandb.id={run.id}" \
     "++callbacks.wandb.log_metrics=false" \
     "++callbacks.wandb.project=fseval" \
+    "++callbacks.wandb.resume=allow" \
     "++callbacks.wandb.group={group_and_queue_name}" \
     "hydra/launcher=rq" \
     "hydra.launcher.queue={group_and_queue_name}" \

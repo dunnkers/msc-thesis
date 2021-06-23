@@ -23,6 +23,7 @@ fseval \
     "callbacks=[wandb]" \
     "++callbacks.wandb.project=fseval" \
     "++callbacks.wandb.log_metrics=true" \
+    "++callbacks.wandb.resume=allow" \
     "++callbacks.wandb.group=synclf-and-synreg" \
     "hydra/launcher=rq" \
     "hydra.launcher.queue=synclf-and-synreg" \
