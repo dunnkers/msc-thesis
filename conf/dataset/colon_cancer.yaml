@@ -1,0 +1,7 @@
+name: Colon Cancer
+task: classification
+domain: biomedical
+adapter:
+  _target_: fseval.adapters.OpenML
+  dataset_id: 1432
+  target_column: class

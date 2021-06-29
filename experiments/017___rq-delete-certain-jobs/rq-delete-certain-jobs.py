@@ -24,7 +24,7 @@ def get_job(registry, job_or_id):
     return job
 
 
-queue = Queue(name="learning-curve", connection=redis)
+queue = Queue(name="fix-fitting-time", connection=redis)
 job_ids = queue.failed_job_registry.get_job_ids()
 for job_id in job_ids:
     job = get_job(queue, job_id)

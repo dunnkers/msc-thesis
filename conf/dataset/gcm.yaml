@@ -1,0 +1,7 @@
+name: GCM
+task: classification
+domain: biomedical
+adapter:
+  _target_: fseval.adapters.OpenML
+  dataset_id: 1106
+  target_column: class

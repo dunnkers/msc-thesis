@@ -14,19 +14,20 @@ source $TMPDIR/venv_${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}/bin/activate
 fseval \
     "--multirun" \
     "+dataset=synclf_easy" \
-    "+estimator@ranker=chi2" \
-    "+estimator@validator=knn" \
+    "+estimator@ranker=multisurf" \
+    "+estimator@validator=decision_tree" \
+    "resample=bootstrap" \
     "resample.sample_size=1.0" \
     "n_bootstraps=25" \
-    "n_jobs=25" \
-    "storage_provider=local" \
+    "n_jobs=13" \
+    "storage=local" \
     "callbacks=[wandb]" \
     "++callbacks.wandb.project=fseval" \
     "++callbacks.wandb.log_metrics=true" \
     "++callbacks.wandb.resume=allow" \
-    "++callbacks.wandb.group=synclf-and-synreg" \
+    "++callbacks.wandb.group=fixing-runs" \
     "hydra/launcher=rq" \
-    "hydra.launcher.queue=synclf-and-synreg" \
+    "hydra.launcher.queue=fixing-runs" \
     "hydra.launcher.enqueue.result_ttl=1d" \
     "hydra.launcher.enqueue.failure_ttl=60d" \
     "hydra.launcher.stop_after_enqueue=true" \
@@ -51,7 +52,7 @@ pg "sbatch --array=0-2 --ntasks=13 --dependency=afterany:20579282 --partition=hi
 ```shell
 pg "cd msc-thesis; git pull && git log -n 1"
 pg "sbatch ~/msc-thesis/jobs/enqueue_runs.sh"
-pg "sbatch --array=0-2 --dependency=afterok:20644359 --mem=78000 --ntasks=13 --partition=regular --export=queue=fix-fitting-time,burst=--burst --job-name=fix-fitting-time ~/msc-thesis/jobs/rq_worker.sh"
+pg "sbatch --array=0-1 --mem=455000 --ntasks=13 --partition=himem --time=96:00:00 --export=queue=himem-missing-runs,burst=--burst --job-name=himem-missing-runs ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
 

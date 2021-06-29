@@ -25,7 +25,7 @@ config = {}
 if writing_to_file:
     config["outputfile"] = outputfile
 slurm_job = os.environ.get("SLURM_JOB_ID", None)
-group_and_queue_name = "fix-fitting-time"
+group_and_queue_name = "add-mean-vali-score"
 wandb.init(
     project="fseval-enqueueing", config=config, id=slurm_job, name=group_and_queue_name
 )
@@ -112,8 +112,8 @@ for i, run in enumerate(runs):
 
     ### SHOULd PROCESS??
     # should_process = run.state == "finished"
-    if dataset_group == "Synclf" or dataset_group == "Synreg":
-        print("not processing: synclf or synreg dataset.")
+    if not (dataset_group == "Synclf" or dataset_group == "Synreg"):
+        print("not processing: is not synclf or synreg dataset.")
         continue
 
     print(
@@ -175,18 +175,19 @@ for i, run in enumerate(runs):
         sys.stdout = f
         # "++storage_provider.run_id={run.id}" \
         # "validator.load_cache=never" \
+        # "++callbacks.wandb.id={run.id}" \
         print(
             f"""fseval --multirun \
     "callbacks=[wandb]" \
-    "+storage_provider=local" \
-    "++storage_provider.load_dir={run_dir}" \
+    "+storage=local" \
+    "++storage.load_dir={run_dir}" \
+    "resample=bootstrap" \
     "+dataset={dataset}" \
     "+estimator@validator={validator}" \
     "+estimator@ranker={ranker}" \
     "ranker.load_cache=must" \
     "n_bootstraps=25" \
     "n_jobs=1" \
-    "++callbacks.wandb.id={run.id}" \
     "++callbacks.wandb.log_metrics=false" \
     "++callbacks.wandb.project=fseval" \
     "++callbacks.wandb.resume=allow" \
