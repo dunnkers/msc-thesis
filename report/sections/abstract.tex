@@ -2,6 +2,7 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
 
+Both in the domains of Feature Selection and Interpretable AI, there exists a desire to `rank' features based on their importance. Such feature importance rankings can then be used to either: (1) reduce the dataset size or (2) interpret the Machine Learning model. In the literature, however, such Feature Rankers are not evaluated in a systematic, consistent way. Many papers have a different way of arguing which feature importance ranker works best. This paper fills this gap, by proposing a new evaluation methodology. By making use of synthetic datasets, feature importance scores can be known beforehand, allowing more systematic evaluation. To facilitate large-scale experimentation using the new methodology, a benchmarking framework was built in Python, called fseval. The framework allows running experiments in parallel and distributed over machines on HPC systems. By integrating with an online platform called Weights and Biases, charts can be interactively explored on a live dashboard. The software was released as open-source software, and is published as a package on the PyPi platform. The research concludes by exploring one such large-scale experiment, to find the strengths and weaknesses of the participating algorithms, on many fronts.
 
 \biblio
 \end{document}
