@@ -45,14 +45,14 @@ From your laptop, run:
 
 ```shell
 pg "cd msc-thesis; git pull && git log -n 1"
-pg "sbatch --array=0-2 --ntasks=13 --dependency=afterany:20579282 --partition=himem --mem=260000 --time=72:00:00 --export=queue=tabnet-run,burst=--burst ~/msc-thesis/jobs/rq_worker.sh"
+pg "sbatch --array=0-1 --ntasks=1 --dependency=afterok:20809105 --partition=regular --mem=20000 --time=24:00:00 --export=queue=add-mean-vali-score,burst=--burst ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
 ## Enqueue runs
 ```shell
 pg "cd msc-thesis; git pull && git log -n 1"
 pg "sbatch ~/msc-thesis/jobs/enqueue_runs.sh"
-pg "sbatch --array=0-1 --mem=455000 --ntasks=13 --partition=himem --time=96:00:00 --export=queue=himem-missing-runs,burst=--burst --job-name=himem-missing-runs ~/msc-thesis/jobs/rq_worker.sh"
+pg "sbatch --array=0 --mem=54000 --ntasks=9 --partition=regular --time=24:00:00 --export=queue=fixing-runs,burst=--burst --job-name=fixing-runs ~/msc-thesis/jobs/rq_worker.sh"
 ```
 
 
@@ -60,3 +60,6 @@ pg "sbatch --array=0-1 --mem=455000 --ntasks=13 --partition=himem --time=96:00:0
 ```shell
 rq-dashboard -u $REDIS_URL
 ```
+
+## fseval
+The project assumes fseval version [v2.1.2](https://github.com/dunnkers/fseval/releases/tag/v2.1.2) is used.
