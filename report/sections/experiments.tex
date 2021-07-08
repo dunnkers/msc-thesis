@@ -4,7 +4,7 @@
 
 
 \section{Experiments}\label{section:experiments}
-Accompanying the proposal of a new feature- ranking and selection methodology, an experiment is conducted. The aim of the experiment is to show an example of what is possible with both the pipeline, and the newly proposed evaluation methodology. In this way, \gls{ml} practitioners and authors of new methods are able to conduct experiments themselves with the same setup and configuration: therefore allowing comparison between the experiments.
+Accompanying the proposal of a new feature- ranking and selection methodology, there is an experiment. The aim of the experiment is to show an example of what is possible with both the pipeline, and the newly proposed evaluation methodology. In this way, \gls{ml} practitioners and authors of new methods are able to conduct experiments themselves with the same setup and configuration: therefore allowing comparison between the experiments.
 
 
 
@@ -30,10 +30,9 @@ A line-up of feature rankers and datasets was constructed to conduct benchmarkin
 %%% SYNCLF HARD %%
 \subsection{Experimental results for the `Synclf hard' dataset}\label{section:experiments-example}
 To best understand the format of the experimental results and the accompanying metrics, a look is taken at the results for one dataset. In this way, a better understanding of the charts is gained first.
-% Also, because all results are freely accessible and available on an online dashboard\footnote{\href{https://wandb.ai/dunnkers/fseval}{https://wandb.ai/dunnkers/fseval}}\todo{'copy over to default dashboard'}, the reader is able to freely browse the results him- or herself, if he- or she desires so.
 
 % `Synclf hard`
-First of all, the considered dataset is the `Synclf hard' dataset. It is a synthetically generated dataset, created using the sklearn \texttt{make\_classification} function (Section~\ref{section:pipeline-components-datasets}). Its full configuration specification is defined in Listing~\ref{code:pipeline-synthetic-example}. The dataset is defined to have $n=10000$ samples and $p=50$ dimensions. After the \gls{cv} step was conducted, 8000 samples are left for training. The dataset has 4 relevant features and 3 target classes. That said, observations are first made on running one feature ranker on the dataset. For this, ReliefF \citep{kononenko_estimating_1994} is chosen.
+First of all, the considered dataset is the `Synclf hard' dataset. It is a synthetically generated dataset, created using the sklearn \texttt{make\_classification} function (Section~\ref{section:pipeline-components-datasets}). Its full configuration specification is defined in Listing~\ref{code:pipeline-synthetic-example}. The dataset is defined to have $n=10000$ samples and $p=50$ dimensions. After the \gls{cv} step was conducted, 8000 samples are left for training. The dataset has 4 relevant features and 3 target classes, which are perfectly balanced. That said, observations are first made on running one feature ranker on the dataset. For this, ReliefF \citep{kononenko_estimating_1994} is chosen.
     
 
 
@@ -61,6 +60,7 @@ Next, a better look is taken at the estimated \textbf{feature importances}. Sinc
 
 \begin{figure}[ht]
     \centering
+    % 850x250
     \includegraphics[width=\linewidth]{report/images/results-importances-relieff.pdf}
     \caption{Estimated feature importances for ReliefF on `Synclf hard'.}
     \label{fig:results-importances-relieff}
@@ -86,18 +86,19 @@ Using the information shown in Figure~\ref{fig:results-importances-relieff}, the
     \label{table:experiments-relieff-gt-metrics}
 \end{table}
 
-The metrics in Table~\ref{table:experiments-relieff-gt-metrics} are to be interpreted as follows. In the case of the R\textsuperscript{2} score, a \textit{higher} score means a better result, i.e., means the ranker estimated the feature importances closer to the ground truth. The log loss, on the other hand, is desired to have a low value; meaning the difference between the estimated- and the \gls{gt} importances were smaller. Next, lets see how to quantify the stability of the run.
+The metrics in Table~\ref{table:experiments-relieff-gt-metrics} are to be interpreted as follows. In the case of the R\textsuperscript{2} score, a \textit{higher} score means a better result, i.e., means the ranker estimated the feature importances closer to the ground truth. The log loss, on the other hand, is desired to have a \textit{low} value; meaning the difference between the estimated- and the \gls{gt} importances were smaller. Next, lets see how to quantify the stability of the run.
 
 To quantify the \textbf{stability} of estimated feature importance scores, the standard deviations of the feature importances are taken. First, the stdev score is computed for each feature over the $B$ bootstraps, and then the mean is taken over over the stdev scores. This is like it was explained in Section~\ref{section:feature-importance-stability}. The score can be plotted like it can be seen in Figure~\ref{fig:results-importances-stability-relieff-example}.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\linewidth]{report/images/results-importances-stability-relieff-example.pdf}
+    % 800x300
+    \includegraphics[width=0.9\linewidth]{report/images/results-importances-stability-relieff-example.pdf}
     \caption{Feature importance scores with stdev error bars and the total mean score visible. A higher stdev score means less stability. Shown for ReliefF on the `Synclf hard' dataset.}
     \label{fig:results-importances-stability-relieff-example}
 \end{figure}
 
-It can be seen in Figure~\ref{fig:results-importances-stability-relieff-example}, that the instabilities take place mainly in the relevant features. This does make sense - the algorithm is confident on which features \textit{not} to choose, but it is not sure about the weighting of the relevant ones. The total mean stdev is illustrated as text on the plot. Thanks to the red error bar lines, it can be quickly observed where the algorithm is instable. 
+It can be seen in Figure~\ref{fig:results-importances-stability-relieff-example}, that the instabilities take place mainly in the relevant features. This means the algorithm is confident on which features \textit{not} to choose, but it is not sure about the weighting of the relevant ones. The mean stdev over all features is illustrated as text on the plot. Thanks to the red error bar lines, it can be quickly observed where the algorithm is instable. 
 
 \subsubsection{Performance of multiple rankers}
 
@@ -106,6 +107,7 @@ Next, multiple rankers are considered. Again, the dataset at hand is the `Synclf
 
 \begin{figure}[ht]
     \centering
+    % 800x250
     \includegraphics[width=\linewidth]{report/images/results-validation-dt-various-rankers.pdf}
     \caption{\gls{dt} validation performance of several rankers on the `Synclf hard' dataset.}
     \label{fig:results-validation-dt-various-rankers}
@@ -135,25 +137,25 @@ Next, the previously plotted mean validation scores are presented in yet another
     \centering
     % 800x175
     \includegraphics[width=\linewidth]{report/images/results-validation-with-mean-score-tabular.pdf}
-    \caption{Mean \gls{dt} validation scores plotted with emphasized \textbf{relative performance}. The \textit{relative performance} is a ranker's mean validation score as a fraction of the highest achieved score by any ranker for some dataset. The small number in the top-right indicates the number of runs that are considered, of which the one with the best score is shown. Same curves as in Figure~\ref{fig:results-validation-dt-various-rankers} and Figure~\ref{fig:results-validation-with-mean-score}.}
+    \caption{Mean \gls{dt} validation scores plotted with emphasized \textbf{relative performance}. The \textit{relative performance} is a ranker's mean validation score as a fraction of the highest achieved score by any ranker for some dataset. Same curves as in Figure~\ref{fig:results-validation-dt-various-rankers} and Figure~\ref{fig:results-validation-with-mean-score}.}
     \label{fig:results-validation-with-mean-score-tabular}
 \end{figure}
 % \todo{add relative performance calculation in theoretical section}
 
-This time (Figure~\ref{fig:results-validation-with-mean-score-tabular}), the summarized performance of each feature ranker is visible in an instant. The coloring of the chart adjusts according to the \textbf{relative performance} of the ranker, with respect to the best performing ranker. This is computed simply by taking the ranker's mean validation score as a fraction of the highest score achieved by any ranker. This means that a relative performance of $1.00$ resembles the highest performing ranker, and a relative performance of $0.50$ would mean a ranker gets only half of the highest performing ranker's score. An accompanying color scale illustrates this fact, where blue resembles a higher score and red a lower score. Furthermore, the differences are further exacerbated by use of an \textit{exponential} color scale. In this case, an exponent of $x^5$ is chosen, to be able to better differentiate between the top performers.
+This time (Figure~\ref{fig:results-validation-with-mean-score-tabular}), the summarized performance of each feature ranker is visible in an instant. The coloring of the chart adjusts according to the \textbf{relative performance} of the ranker, with respect to the best performing ranker. This is computed simply by taking the ranker's mean validation score as a fraction of the highest score achieved by any ranker. This means that a relative performance of $1.00$ resembles the highest performing ranker, and a relative performance of $0.50$ would mean a ranker gets only half of the highest performing ranker's score. An accompanying color scale illustrates this fact, where blue resembles a higher score and red a lower score. Furthermore, the differences are further exacerbated by use of an \textit{exponential} color scale. In this case, an exponent of $x^5$ is chosen, to be able to better differentiate between the top performers. The best score also gets its font weight displayed as \textit{bold}, such to emphasize the best performing ranker.
 It is thereby important to note that in case \textit{multiple} datasets are considered, each dataset gets its own relative performance scale. This is because the scores across multiple datasets ought not to be compared directly to each other.
 
 
 
 % R2- and Log loss scores
-Lastly, again the R\textsuperscript{2}- and log loss scores are investigated, which are computed using the ground-truth relevant features. The hypothesis is that the scores are able to `predict' the validation estimator's performance. This is useful because, by evaluating the quality of the feature ranking directly, one could already make meaningful conclusions, just by having run the ranker alone. A comparison chart for these metrics is plotted in Figure~\ref{fig:results-ground-truth-various-rankers}.
+Again the R\textsuperscript{2}- and log loss scores are investigated, which are computed using the ground-truth relevant features. The hypothesis is that the scores are able to `predict' the validation estimator's performance. This is useful because, by evaluating the quality of the feature ranking directly, one could already make meaningful conclusions, just by having run the ranker alone. A comparison chart for these metrics is plotted in Figure~\ref{fig:results-ground-truth-various-rankers}.
 
 \begin{figure}[ht]
      \centering
      \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\linewidth]{report/images/results-r2-score-various-rankers.pdf}
-        \caption{The average R\textsuperscript{2} score over all bootstraps. \textbf{Higher} is better. Computed like explained in Section~\ref{section:feature-importance-definition}.}
+        \caption{The average R\textsuperscript{2} score over all bootstraps. A \textbf{higher} score is better. Computed like explained in Section~\ref{section:feature-importance-definition}.}
         \label{fig:results-r2-score-various-rankers}
      \end{subfigure}
      \hfill
@@ -171,11 +173,12 @@ Lastly, again the R\textsuperscript{2}- and log loss scores are investigated, wh
 For Figure~\ref{fig:results-ground-truth-various-rankers} it is, first of all, important to note that the R\textsuperscript{2}- and log loss scores were computed as an average score over all bootstraps. This means that after running a single ranker on a single dataset, $B$ such scores are obtained - which are then aggregated into a single score by taking its mean. In the figure it can be seen, that in the case of the R\textsuperscript{2} score the scorings represent the scores presented in Figure~\ref{fig:results-validation-with-mean-score} and Figure~\ref{fig:results-validation-with-mean-score-tabular} very well. The order of best performance w.r.t. mean validation score was predicted by the R\textsuperscript{2} score: wherever the R\textsuperscript{2} score is higher, the mean validation performance is also higher. The same applies to the log loss scores: more loss means worse mean validation performance. Although in this example the differences are very small, still a measure of proportionality between the scores exists, for this dataset.
 
 
-Lastly, again the \textbf{stability} of the rankers is assessed. This can be seen illustrated in Figure~\ref{fig:results-importances-stability-multiple-rankers}.
+To assess the \textbf{stability} of the rankers, the feature importances of the various rankers can be put side-by-side. Then, the standard deviations of each feature estimated over $B$ bootstraps can be shown. This can be seen illustrated in Figure~\ref{fig:results-importances-stability-multiple-rankers}.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{report/images/results-importances-stability-multiple-rankers.pdf}
+    % 800x190
+    \includegraphics[width=\linewidth]{report/images/results-importances-stability-multiple-rankers.png}
     \caption{The estimated feature importances and their stabilities, quantified using the mean standard deviation over all feature importances. Plots shown for `Synclf hard' dataset.}
     \label{fig:results-importances-stability-multiple-rankers}
 \end{figure}
@@ -190,44 +193,61 @@ Now that all relevant plots are clarified and understood, a broader view can be 
 
 %%% ALL RESULTS %%
 \subsection{Experimental result for all datasets}
-To illustrate the performance of the complete experiment, different ways of visualization are required. With this many combinations of feature rankers and datasets, no longer can the line curves showing the mean validation scores be used to explain the findings. Instead, it is chosen to display this data in a heatmap, exactly similar to Figure~\ref{fig:results-validation-with-mean-score-tabular}, but with more data. Various aspects of performance are discussed, starting with the \textbf{mean validation} performance. See Figure~\ref{fig:results-all-datasets-mean-validation-dt}.
+Now, a look is taken at the results of \textit{all} datasets. See Figure~\ref{fig:results-all-datasets-mean-validation-dt}, which is explained below.
 
 \begin{figure}[ht]
     \centering
-    % 1000x450
+    % 1000x400
     \includegraphics[width=\linewidth]{report/images/results-all-datasets-mean-validation-dt.pdf}
-    \caption{Mean validation scores for all datasets and all rankers. Color scale is configured with \textit{relative performance}, like explained in Section~\ref{section:experiments-example}. Validation scores shown are for classification datasets using a \gls{dt} as a validator.}
+    \caption{Mean \textbf{classification} accuracy validation scores for all datasets and all rankers. Color scale is configured with \textit{relative performance}, like explained in Section~\ref{section:experiments-example}. Validation scores shown are for classification datasets using a \gls{dt} as a validator.}
     \label{fig:results-all-datasets-mean-validation-dt}
 \end{figure}
 
+To illustrate the performance of the complete experiment, different ways of visualization are required. With this many combinations of feature rankers and datasets, no longer can the line curves showing the mean validation scores be used to explain the findings. Instead, it is chosen to display this data in a heatmap, exactly similar to Figure~\ref{fig:results-validation-with-mean-score-tabular}, but with more data. Various aspects of performance are discussed, starting with the \textbf{mean validation} performance. 
 
-In Figure~\ref{fig:results-all-datasets-mean-validation-dt} it can be seen that the table coloring reveals much about the performance of the feature ranker. The more the coloring is toward \textit{blue}, the better the ranker performed. On the other hand, red indicates bad performance: the worst case in this plot is Boruta, which only achieves about half the score of the best performer for the `Multifeat Pixel' dataset. Boruta's bad performance is almost certainly due to a configuration anomaly, since the performance is worse than random in some cases.
+
+
+In Figure~\ref{fig:results-all-datasets-mean-validation-dt} it can be seen that the table coloring reveals much about the performance of the feature ranker. The more the coloring is toward dark \textit{blue}, the better the ranker performed. On the other hand, red indicates bad performance: the worst case in this plot is Boruta, which only achieves about half the score of the best performer for the `Multifeat Pixel' dataset. Boruta's bad performance is almost certainly due to a configuration anomaly, since the performance is worse than random in some cases. A notable performer is the \textbf{\gls{dt}}, used as a Feature Ranker by making use of its computed feature importance scores. The algorithm scores high on nearly every dataset, making it a good contender for the best performer. It might seem odd, however, that a \gls{dt} is run for Feature Selection first, and then \textit{also} for validation. For this reason, the experiment was also run with another validation estimator, \gls{knn}. For this, see Figure~\ref{fig:results-all-datasets-mean-validation-knn} in the Appendix.
 
 Next is the algorithm \textbf{stability}. The algorithm stability scores were computed like illustrated in the previous section, but now for more datasets. The scores were represented in a table and have a custom color scheme applied to it to better emphasize the differences. See Figure~\ref{fig:results-all-datasets-stability-scores}.
 
 \begin{figure}[ht]
     \centering
+    % 1000x450
     \includegraphics[width=\linewidth]{report/images/results-all-datasets-stability-scores.pdf}
-    \caption{Algorithm stability scores. Obtain by computing the standard deviation over the feature importance vectors, like illustrated in Section~\ref{section:experiments-example} and explained in Section~\ref{section:feature-importance-stability}. A custom color scheme was chosen to better emphasize the differences. A darker shade of red means worse stability.}
+    \caption{Algorithm stability scores. Obtained by computing the standard deviation over the feature importance vectors, like illustrated in Section~\ref{section:experiments-example} and explained in Section~\ref{section:feature-importance-stability}. A custom color scheme was chosen to better emphasize the differences. A darker shade of red means worse stability. A darker shade of green means better stability. The empty cells are due to an experiment failure.}
     \label{fig:results-all-datasets-stability-scores}
 \end{figure}
 
-Like can be seen in Figure~\ref{fig:results-all-datasets-stability-scores}, the stability scores differ per ranker. Especially MultiSURF can be seen to be unstable for the `Synclf' datasets. Some rankers can be seen to be shaded in a lighter color of red, meaning the algorithm is relatively stable. This is the case mainly for FeatBoost and XGBoost.
+Like can be seen in Figure~\ref{fig:results-all-datasets-stability-scores}, the stability scores differ per ranker. Especially TabNet, XGBoost and Decision Tree can be seen to be relatively unstable. Infinite Selection, Mutual Info and ReliefF, on the other hand, have a better stability.
 
-Lastly, a look is taken at the computed R\textsuperscript{2} scores. The scores were computed using the \gls{apriori} known relevant features, i.e., the datasets \gls{gt} feature importances. A comparison heatmap plot can be seen in Figure~\ref{fig:results-all-datasets-r2-scores}.
+Next, a look is taken at the computed R\textsuperscript{2} scores. The scores were computed using the \gls{apriori} known relevant features, i.e., the datasets \gls{gt} feature importances. A comparison heatmap plot can be seen in Figure~\ref{fig:results-all-datasets-r2-scores}.
 
 \begin{figure}[ht]
     \centering
-    % 800x300
+    % 800x250
     \includegraphics[width=\linewidth]{report/images/results-all-datasets-r2-scores.pdf}
-    \caption{Algorithm R\textsuperscript{2} scores, computed using the \gls{gt} feature importanes. The computation was explained in Section~\ref{section:evaluation-apriori-knowledge} and illustrated in Section~\ref{section:experiments-example}. A darker shade of green means a better score. For Boruta, the score computation failed.}
+    \caption{Algorithm R\textsuperscript{2} scores, computed using the \gls{gt} feature importanes. The computation was explained in Section~\ref{section:evaluation-apriori-knowledge} and illustrated in Section~\ref{section:experiments-example}. A darker shade of green means a better score.}
     \label{fig:results-all-datasets-r2-scores}
 \end{figure}
-\todo{Insert Log loss chart.}
 
-As could be seen in Figure~\ref{fig:results-all-datasets-r2-scores}, the differences in R\textsuperscript{2} scores are notable, and correlate slightly with the mean validation scores for the designated datasets. All of \gls{dt}, ReliefF and TabNet have high R\textsuperscript{2} scores for the chosen datasets. FeatBoost, however, had a high overall mean validation score but cannot be seen to have a high R\textsuperscript{2} score. This might indicate that the scoring does not always foretell validation performance.
+As could be seen in Figure~\ref{fig:results-all-datasets-r2-scores}, the differences in R\textsuperscript{2} scores are notable, and correlate slightly with the mean validation scores for the designated datasets. Both \gls{dt} and ReliefF have high R\textsuperscript{2} scores for the chosen datasets. FeatBoost, however, had a high overall mean validation score but cannot be seen to have a high R\textsuperscript{2} score. This might indicate that the scoring does not always foretell validation performance.
 
-Another plot showing the validation scores using \gls{knn} as the validation estimator can be found in the Appendix Figure~\ref{fig:results-all-datasets-mean-validation-knn}.
+Especially in the case of FeatBoost and Infinite Selection, there exist big discrepancies between the mean validation score and the computed R\textsuperscript{2} scores. Whereas for both rankers the mean validation scores are high for the `Synclf' datasets, the R\textsuperscript{2} scores did not follow. A reason for this might be the fact that these rankers do often rank features as having an importance of above zero. Whereas an algorithm might still get the feature importance \textit{order} correct, the algorithm does a worse job in the R\textsuperscript{2} scoring due to always giving features scores of well above zero. Other rankers, that assign more importance to some presumably relevant features but less to the others, will be better off with the R\textsuperscript{2} scoring. The metric might therefore pose an unfair advantage to how rankers behave in this regard.
+
+In a similar fashion, the log loss scores are plotted. See Figure~\ref{fig:results-all-datasets-log-loss}.
+
+\begin{figure}[ht]
+    \centering
+    % 800x250
+    \includegraphics[width=\linewidth]{report/images/results-all-datasets-log-loss.pdf}
+    \caption{Algorithm Log loss scores, computed using the \gls{gt} feature importanes. The computation was explained in Section~\ref{section:evaluation-apriori-knowledge} and illustrated in Section~\ref{section:experiments-example}. A darker shade of blue means a better score.}
+    \label{fig:results-all-datasets-log-loss}
+\end{figure}
+
+In the case of the log loss metric, a different pattern is visible (Figure~\ref{fig:results-all-datasets-log-loss}). Indeed, well performing rankers are \gls{dt} and ReliefF. The scoring did miss FeatBoost and Infinite Selection, however, as being overall good performers. Whereas according to the \textit{mean} validation scores FeatBoost and Infinite Selection are among the top performers, this is not reflected in the log loss score. This might, again, be due to an unfair advantage given to rankers that tend to score irrelevant features closer to zero. This is similar to the R\textsuperscript{2} score, though arguably the effect is exaggerated in the case of the R\textsuperscript{2} score. The metrics might therefore not be ideal for direct algorithm comparison: it is best the mean validation scores are included at all times. The metrics can, however, reveal interesting information in specific scenarios. This might be the case, for example, when no feature selection is applied at all in the evaluation process, and all one has is the feature importance ground truth and estimations.
+
+Additionally, some plots can be seen in the Appendix. A plot showing the validation scores using \gls{knn} as the validation estimator can be found in the Appendix Figure~\ref{fig:results-all-datasets-mean-validation-knn}. To see the R\textsuperscript{2} scores and Log loss scores for the \textit{regression} datasets, see Figure~\ref{fig:results-all-datasets-log-loss-regression} and Figure~\ref{fig:results-all-datasets-r2-score-regression}, respectively. The regression dataset mean validation scores can be seen in Figure~\ref{fig:results-all-datasets-mean-validation-dt-regression}.
 
 
 \subsection{Learning curves and time complexity}

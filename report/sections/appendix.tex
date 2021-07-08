@@ -124,9 +124,36 @@
 
 \begin{figure}[ht]
     \centering
+    % 1000x600
     \includegraphics[width=\linewidth]{report/images/results-all-datasets-mean-validation-knn.pdf}
-    \caption{\textbf{\gls{knn}} mean validation scores for all datasets. Color scale is configured with \textit{relative performance}, like explained in Section~\ref{section:experiments-example}.}
+    \caption{\textbf{\gls{knn}} mean validation scores for all \textbf{classification} datasets. Color scale is configured with \textit{relative performance}, like explained in Section~\ref{section:experiments-example}.}
     \label{fig:results-all-datasets-mean-validation-knn}
+\end{figure}
+
+
+\begin{figure}[ht]
+    \centering
+    % 700x400
+    \includegraphics[width=\linewidth]{report/images/results-all-datasets-mean-validation-dt-regression.pdf}
+    \caption{\textbf{\gls{dt}} mean validation scores for all \textbf{regression} datasets. Color scale is configured with \textit{relative performance}, like explained in Section~\ref{section:experiments-example}.}
+    \label{fig:results-all-datasets-mean-validation-dt-regression}
+\end{figure}
+
+
+\begin{figure}[ht]
+    \centering
+    % 800x300
+    \includegraphics[width=\linewidth]{report/images/results-all-datasets-log-loss-regression.pdf}
+    \caption{Algorithm Log loss scores for \textbf{regression} datasets, computed using the \gls{gt} feature importanes. The computation was explained in Section~\ref{section:evaluation-apriori-knowledge} and illustrated in Section~\ref{section:experiments-example}. A lighter shade of blue means a better score.}
+    \label{fig:results-all-datasets-log-loss-regression}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    % 800x300
+    \includegraphics[width=\linewidth]{report/images/results-all-datasets-r2-score-regression.pdf}
+    \caption{Algorithm R\textsuperscript{2} scores for \textbf{regression} datasets, computed using the \gls{gt} feature importanes. The computation was explained in Section~\ref{section:evaluation-apriori-knowledge} and illustrated in Section~\ref{section:experiments-example}. A darker shade of green means a better score.}
+    \label{fig:results-all-datasets-r2-score-regression}
 \end{figure}
 
 
