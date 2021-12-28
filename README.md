@@ -1,8 +1,15 @@
 # msc-thesis
-Benchmarking feature rankers using [fseval](https://github.com/dunnkers/fseval).
+Benchmarking feature rankers using [fseval](https://github.com/dunnkers/fseval) on [Peregrine](https://www.rug.nl/society-business/centre-for-information-technology/research/services/hpc/facilities/peregrine-hpc-cluster?lang=en).
+
+## Install
+Install [fseval](https://github.com/dunnkers/fseval).
+
+```shell
+pip install fseval==2.1.2
+```
 
 ## Enqueueing jobs
-Install [fseval](https://github.com/dunnkers/fseval). Then run:
+Enqueue jobs by running:
 
 ```shell
 pg -t "srun --ntasks=1 --time=02:00:00 --mem=10000 --chdir=/scratch/s2995697/fseval/ --partition=regular --pty bash -i"
