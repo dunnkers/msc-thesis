@@ -1,6 +1,11 @@
 # msc-thesis
 Benchmarking feature rankers using [fseval](https://github.com/dunnkers/fseval) on [Peregrine](https://www.rug.nl/society-business/centre-for-information-technology/research/services/hpc/facilities/peregrine-hpc-cluster?lang=en).
 
+<a href="https://docs.google.com/presentation/d/e/2PACX-1vRmOR0McIVtZOPiu2rI2NE2VN2cuFZ442BUjsBqhSn6QKEnRVlBaVtkzbOU25MLZQCXL17cCFoUl_mf/pub?start=false&loop=false&delayms=3000">
+    <img width="965" alt="Screen Shot 2022-01-28 at 10 09 47" src="https://user-images.githubusercontent.com/744430/151518929-9f006db6-b09b-442c-b359-0b07c1664e69.png">
+</a>
+
+
 ## Install
 Install [fseval](https://github.com/dunnkers/fseval).
 
